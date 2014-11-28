@@ -15,6 +15,8 @@
 		23371DB31A09586800F52BD7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23371DB21A09586800F52BD7 /* Images.xcassets */; };
 		23371DB61A09586800F52BD7 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23371DB41A09586800F52BD7 /* LaunchScreen.xib */; };
 		23371DC21A09586800F52BD7 /* BlockNinjaV2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23371DC11A09586800F52BD7 /* BlockNinjaV2Tests.swift */; };
+		23371DCC1A09588300F52BD7 /* PlayScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23371DCB1A09588300F52BD7 /* PlayScene.swift */; };
+		23371DCE1A09588900F52BD7 /* Ninja.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23371DCD1A09588900F52BD7 /* Ninja.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +42,8 @@
 		23371DBB1A09586800F52BD7 /* BlockNinjaV2Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BlockNinjaV2Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		23371DC01A09586800F52BD7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		23371DC11A09586800F52BD7 /* BlockNinjaV2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockNinjaV2Tests.swift; sourceTree = "<group>"; };
+		23371DCB1A09588300F52BD7 /* PlayScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayScene.swift; sourceTree = "<group>"; };
+		23371DCD1A09588900F52BD7 /* Ninja.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ninja.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +88,8 @@
 				23371DA71A09586800F52BD7 /* AppDelegate.swift */,
 				23371DA91A09586800F52BD7 /* GameScene.sks */,
 				23371DAB1A09586800F52BD7 /* GameScene.swift */,
+				23371DCB1A09588300F52BD7 /* PlayScene.swift */,
+				23371DCD1A09588900F52BD7 /* Ninja.swift */,
 				23371DAD1A09586800F52BD7 /* GameViewController.swift */,
 				23371DAF1A09586800F52BD7 /* Main.storyboard */,
 				23371DB21A09586800F52BD7 /* Images.xcassets */,
@@ -167,6 +173,7 @@
 				TargetAttributes = {
 					23371DA11A09586800F52BD7 = {
 						CreatedOnToolsVersion = 6.0.1;
+						DevelopmentTeam = 79667G4622;
 					};
 					23371DBA1A09586800F52BD7 = {
 						CreatedOnToolsVersion = 6.0.1;
@@ -221,6 +228,8 @@
 			files = (
 				23371DAC1A09586800F52BD7 /* GameScene.swift in Sources */,
 				23371DAE1A09586800F52BD7 /* GameViewController.swift in Sources */,
+				23371DCC1A09588300F52BD7 /* PlayScene.swift in Sources */,
+				23371DCE1A09588900F52BD7 /* Ninja.swift in Sources */,
 				23371DA81A09586800F52BD7 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -344,9 +353,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = BlockNinjaV2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -354,9 +366,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = BlockNinjaV2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -413,6 +428,7 @@
 				23371DC71A09586800F52BD7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		23371DC81A09586800F52BD7 /* Build configuration list for PBXNativeTarget "BlockNinjaV2Tests" */ = {
 			isa = XCConfigurationList;
@@ -421,6 +437,7 @@
 				23371DCA1A09586800F52BD7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

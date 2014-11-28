@@ -9,14 +9,16 @@
 import SpriteKit
 
 class GameScene: SKScene {
+    
+    let start = SKSpriteNode(imageNamed: "title")
+    let displayPanel = SKSpriteNode(imageNamed: "brownPanel")
     override func didMoveToView(view: SKView) {
-        /* Setup your scene here */
-        let myLabel = SKLabelNode(fontNamed:"Chalkduster")
-        myLabel.text = "Hello, World!";
-        myLabel.fontSize = 65;
-        myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame));
-        
-        self.addChild(myLabel)
+        displayPanel.setScale(5.0)
+        start.setScale(2.0)
+        self.start.position = CGPointMake(self.frame.size.width/2, CGRectGetMidY(self.frame))
+        displayPanel.position = CGPointMake(self.frame.size.width/2, self.frame.size.height/2)
+        self.addChild(displayPanel)
+        self.addChild(start)
     }
     
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
@@ -24,21 +26,18 @@ class GameScene: SKScene {
         
         for touch: AnyObject in touches {
             let location = touch.locationInNode(self)
-            
-            let sprite = SKSpriteNode(imageNamed:"Spaceship")
-            
-            sprite.xScale = 0.5
-            sprite.yScale = 0.5
-            sprite.position = location
-            
-            let action = SKAction.rotateByAngle(CGFloat(M_PI), duration:1)
-            
-            sprite.runAction(SKAction.repeatActionForever(action))
-            
-            self.addChild(sprite)
+            if self.nodeAtPoint(location) == self.start {
+                var scene = PlayScene(size: self.size)
+                let skView = self.view as SKView!
+                skView.ignoresSiblingOrder = true
+                scene.scaleMode = .ResizeFill
+                scene.size = skView.bounds.size
+                skView.presentScene(scene)
+                
+            }
         }
     }
-   
+    
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
     }
