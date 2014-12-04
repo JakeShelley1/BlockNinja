@@ -102,12 +102,14 @@ class Enemy {
     var enemyMoveAndRemove: SKAction!
     var isRunning = true
     var health: Int
+    var jumper: Bool
     var fakeHealth: Int
     var ninja = SKSpriteNode(imageNamed: "enemyIdle")
     var onGround = false
-    init(health: Int) {
+    init(health: Int, jumper: Bool) {
         self.health = health
         self.fakeHealth = health
+        self.jumper = jumper
     }
     
     //Add physics and position to hero
@@ -115,7 +117,7 @@ class Enemy {
         isRunning = true
         var shuriken = SKSpriteNode(imageNamed: "shuriken")
         ninja.position = CGPoint(x: frameWidth + ninja.size.width, y: ninja.size.height * 2)
-        let adjustedNinjaSize = CGSize(width: ninja.size.width * 0.4, height: ninja.size.height * 0.4)
+        let adjustedNinjaSize = CGSize(width: ninja.size.width * (size / 1.5), height: ninja.size.height * size)
         ninja.physicsBody = SKPhysicsBody(rectangleOfSize: adjustedNinjaSize)
         ninja.physicsBody?.dynamic = true
         ninja.setScale(size)
@@ -157,7 +159,7 @@ class Enemy {
     }
     
     func jump() {
-        ninja.physicsBody?.applyImpulse(CGVectorMake(0, 100))
+        ninja.physicsBody?.applyImpulse(CGVectorMake(0, 70))
         playJumpAnimation()
         onGround = false
     }
@@ -172,7 +174,7 @@ class Enemy {
         ninja.physicsBody?.collisionBitMask = groundCategory
         let dead = SKTexture(imageNamed: "enemyDead")
         let deadAnim = SKAction.animateWithTextures([dead], timePerFrame: 0.2)
-        let died = SKAction.sequence([deadAnim, SKAction.runBlock({self.ninja.position = CGPoint(x: frameWidth + self.ninja.size.width, y: self.ninja.size.height * 2)}), SKAction.runBlock({self.fakeHealth = self.health})])
+        let died = SKAction.sequence([deadAnim, SKAction.runBlock({self.ninja.position = CGPoint(x: frameWidth + (self.ninja.size.width * 2), y: self.ninja.size.height * 3)}), SKAction.runBlock({self.fakeHealth = self.health})])
         ninja.runAction(died)
     }
     

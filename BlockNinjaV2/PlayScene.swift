@@ -20,9 +20,9 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
     let attackButton = SKSpriteNode(imageNamed: "JumpAttackButton")
     
     let hero = Hero(health: 1)
-    let enemy1 = Enemy(health: 1)
-    let enemy2 = Enemy(health: 1)
-    let enemy3 = Enemy(health: 3)
+    let enemy1 = Enemy(health: 1, jumper: false)
+    let enemy2 = Enemy(health: 1, jumper: true)
+    let enemy3 = Enemy(health: 1, jumper: false)
     
     let playButton = SKSpriteNode(imageNamed: "button")
     let pressedPlayButton = SKSpriteNode(imageNamed: "pressedButton")
@@ -59,8 +59,8 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         hero.ninja.physicsBody?.collisionBitMask = groundCategory | enemy1Category | enemy2Category | enemy3Category | enemy4Category
         
         self.addChild(enemy1.createEnemy(frame.size.width, speed: 0.013, size: 0.6))
-        self.addChild(enemy2.createEnemy(frame.size.width, speed: 0.010, size: 0.4))
-        self.addChild(enemy3.createEnemy(frame.size.width, speed: 0.03, size: 1.2))
+        self.addChild(enemy2.createEnemy(frame.size.width, speed: 0.011, size: 0.6))
+        self.addChild(enemy3.createEnemy(frame.size.width, speed: 0.005, size: 0.4))
         self.addChild(hero.ninja)
         enemy1.ninja.physicsBody?.categoryBitMask = enemy1Category
         enemy2.ninja.physicsBody?.categoryBitMask = enemy2Category
@@ -85,7 +85,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
                 moving.addChild(sprite)
             }
         }
-        
+
         //Cloud spawning
         let spawnACloud = SKAction.runBlock({self.spawnCloud()})
         let spawnThenDelayCloud = SKAction.sequence([spawnACloud, SKAction.waitForDuration(6.0)])
@@ -101,7 +101,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         //Actual Ground
         var ground = SKNode()
         ground.position = CGPointMake(0, groundTexture.size().height / 1.47)
-        ground.physicsBody = SKPhysicsBody(rectangleOfSize: CGSizeMake(self.frame.size.width * 3, groundTexture.size().height / 4.0))
+        ground.physicsBody = SKPhysicsBody(rectangleOfSize: CGSizeMake(self.frame.size.width * 4, groundTexture.size().height / 4.0))
         ground.setScale(1.0)
         ground.physicsBody?.dynamic = false
         ground.physicsBody?.categoryBitMask = groundCategory
@@ -109,7 +109,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         ground.physicsBody?.collisionBitMask = ninjaCategory | enemy1Category | enemy2Category | enemy3Category | enemy4Category
         ground.physicsBody?.restitution = 0.0
         self.addChild(ground)
-        
+
         //Jump and Attack buttons
         attackButton.position = CGPointMake(CGRectGetMidX(self.frame) * 1.5, CGRectGetMinY(self.frame))
         jumpButton.position = CGPointMake(CGRectGetMidX(self.frame) / 2, CGRectGetMinY(self.frame))
@@ -151,6 +151,10 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             if enemy2.fakeHealth == 0 {
                 enemy2.playDeadAnimation(frame.size.width)
             }
+            
+        case enemy2Category | groundCategory:
+            enemy2.jump()
+            
         case enemy3Category | weaponCategory:
             enemy3.fakeHealth = enemy3.fakeHealth - 1
             shuriken.removeFromParent()
