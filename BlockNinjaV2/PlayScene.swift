@@ -11,6 +11,8 @@ import SpriteKit
 
 class PlayScene: SKScene, SKPhysicsContactDelegate {
     
+    var cloudTexture = SKTexture(imageNamed: "Cloud")
+    var cloudMoveAndRemove = SKAction()
     var moving: SKNode!
     var enemyImage = SKSpriteNode(imageNamed: "enemyIdle")
     var skyColor: SKColor!
@@ -19,6 +21,8 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
     
     let hero = Hero(health: 1)
     let enemy1 = Enemy(health: 1)
+    let enemy2 = Enemy(health: 1)
+    let enemy3 = Enemy(health: 3)
     
     let playButton = SKSpriteNode(imageNamed: "button")
     let pressedPlayButton = SKSpriteNode(imageNamed: "pressedButton")
@@ -32,8 +36,11 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
     let groundCategory: UInt32 = 1 << 0
     let ninjaCategory: UInt32 = 1 << 1
     let weaponCategory: UInt32 = 1 << 2 //Ninja's weapons
-    let enemyCategory: UInt32 = 1 << 3 //All enemies
-    let enemyWeaponCategory: UInt32 = 1 << 4 //Enemy weapons
+    let enemy1Category: UInt32 = 1 << 3
+    let enemy2Category: UInt32 = 1 << 4
+    let enemy3Category: UInt32 = 1 << 5
+    let enemy4Category: UInt32 = 1 << 6
+    let enemyWeaponCategory: UInt32 = 1 << 7 //Enemy weapons
     
     
     override func didMoveToView(view: SKView) {
@@ -49,12 +56,15 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         hero.createHero(self.frame.width)
         hero.ninja.physicsBody?.categoryBitMask = ninjaCategory
         hero.ninja.physicsBody?.contactTestBitMask = groundCategory
-        hero.ninja.physicsBody?.collisionBitMask = groundCategory
+        hero.ninja.physicsBody?.collisionBitMask = groundCategory | enemy1Category | enemy2Category | enemy3Category | enemy4Category
         
-        
-        spawnEnemy()
+        self.addChild(enemy1.createEnemy(frame.size.width, speed: 0.013, size: 0.6))
+        self.addChild(enemy2.createEnemy(frame.size.width, speed: 0.010, size: 0.4))
+        self.addChild(enemy3.createEnemy(frame.size.width, speed: 0.03, size: 1.2))
         self.addChild(hero.ninja)
-        
+        enemy1.ninja.physicsBody?.categoryBitMask = enemy1Category
+        enemy2.ninja.physicsBody?.categoryBitMask = enemy2Category
+        enemy3.ninja.physicsBody?.categoryBitMask = enemy3Category
         //Ground
         
         //Moving Ground
@@ -76,15 +86,27 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             }
         }
         
+        //Cloud spawning
+        let spawnACloud = SKAction.runBlock({self.spawnCloud()})
+        let spawnThenDelayCloud = SKAction.sequence([spawnACloud, SKAction.waitForDuration(6.0)])
+        let spawnThenDelayCloudForever = SKAction.repeatActionForever(spawnThenDelayCloud)
+        self.runAction(spawnThenDelayCloudForever)
+        
+        let clouddistanceToMove = CGFloat(self.frame.width + 4.0 * cloudTexture.size().width)
+        let cloudmovement = SKAction.moveByX(-clouddistanceToMove, y: 0.0, duration: NSTimeInterval(0.025 * clouddistanceToMove))
+        let removeCloud = SKAction.removeFromParent()
+        cloudMoveAndRemove = SKAction.sequence([cloudmovement, removeCloud])
+        
+        
         //Actual Ground
         var ground = SKNode()
         ground.position = CGPointMake(0, groundTexture.size().height / 1.47)
-        ground.physicsBody = SKPhysicsBody(rectangleOfSize: CGSizeMake(self.frame.size.width * 2, groundTexture.size().height / 4.0))
+        ground.physicsBody = SKPhysicsBody(rectangleOfSize: CGSizeMake(self.frame.size.width * 3, groundTexture.size().height / 4.0))
         ground.setScale(1.0)
         ground.physicsBody?.dynamic = false
         ground.physicsBody?.categoryBitMask = groundCategory
-        ground.physicsBody?.contactTestBitMask = ninjaCategory | enemyCategory
-        ground.physicsBody?.collisionBitMask = ninjaCategory | enemyCategory
+        ground.physicsBody?.contactTestBitMask = ninjaCategory | enemy1Category | enemy2Category | enemy3Category | enemy4Category
+        ground.physicsBody?.collisionBitMask = ninjaCategory | enemy1Category | enemy2Category | enemy3Category | enemy4Category
         ground.physicsBody?.restitution = 0.0
         self.addChild(ground)
         
@@ -116,11 +138,45 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         } else {
             endGame()
             }
-        case enemyCategory | weaponCategory:
+        case enemy1Category | weaponCategory:
+            enemy1.fakeHealth = enemy1.fakeHealth - 1
+            shuriken.removeFromParent()
+            if enemy1.fakeHealth == 0 {
+                enemy1.playDeadAnimation(frame.size.width)
+            }
+            
+        case enemy2Category | weaponCategory:
+            enemy2.fakeHealth = enemy2.fakeHealth - 1
+            shuriken.removeFromParent()
+            if enemy2.fakeHealth == 0 {
+                enemy2.playDeadAnimation(frame.size.width)
+            }
+        case enemy3Category | weaponCategory:
+            enemy3.fakeHealth = enemy3.fakeHealth - 1
+            shuriken.removeFromParent()
+            if enemy3.fakeHealth == 0 {
+                enemy3.playDeadAnimation(frame.size.width)
+            }
+
+        /*
+        case enemy1Category | weaponCategory:
             shuriken.removeFromParent()
             enemy1.playDeadAnimation(frame.size.width)
+        */
             
-        case enemyCategory | ninjaCategory:
+        case (enemy1Category | ninjaCategory):
+            if !hero.isDead{
+                die()
+            }
+        case (enemy2Category | ninjaCategory):
+            if !hero.isDead{
+                die()
+            }
+        case (enemy3Category | ninjaCategory):
+            if !hero.isDead{
+                die()
+            }
+        case (enemy4Category | ninjaCategory):
             if !hero.isDead{
                 die()
             }
@@ -130,7 +186,10 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
+    
+    //Run everytime frame is rendered
     override func update(currentTime: CFTimeInterval) {
+
     }
     
     
@@ -142,7 +201,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             if (CGRectContainsPoint(attackButton.frame, touch.locationInNode(self)) & (!hero.isDead)) {
                 shuriken = hero.throwStar()
                 shuriken.physicsBody?.categoryBitMask = weaponCategory
-                shuriken.physicsBody?.contactTestBitMask = enemyCategory
+                shuriken.physicsBody?.contactTestBitMask = enemy1Category | enemy2Category | enemy3Category
                 shuriken.physicsBody?.collisionBitMask = 0
                 self.addChild(shuriken)
                 shuriken.physicsBody?.velocity = CGVectorMake(20, 0)
@@ -163,24 +222,16 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             }
             
             if (CGRectContainsPoint(playButton.frame, touch.locationInNode(displayPanel))) {
+                self.removeAllChildren()
                 var scene = PlayScene(size: self.size)
                 let skView = self.view as SKView!
-                skView.ignoresSiblingOrder = true
+                //skView.ignoresSiblingOrder = true
                 scene.scaleMode = .ResizeFill
                 scene.size = skView.bounds.size
-                self.removeAllChildren()
                 skView.presentScene(scene)
             }
         }
     }
-    
-    
-    
-    func spawnEnemy() {
-        
-        self.addChild(enemy1.createEnemy(frame.size.width))
-    }
-    
     
     //You die
     func die() {
@@ -206,6 +257,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         self.runAction(gameOver)
     }
     
+    //Create end game panel
     func createEndPanel() {
         let playAgainText = SKSpriteNode(imageNamed: "playAgain")
         let menuText = SKSpriteNode(imageNamed: "menu")
@@ -231,6 +283,22 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         let moveDisplay = SKAction.moveByX(0, y: -(frame.size.height/2 + displayPanel.size.height), duration: 1)
         displayPanel.runAction(moveDisplay)
 
+    }
+    
+    //Spawn Cloud
+    func spawnCloud() {
+        let cloud = SKSpriteNode(imageNamed: "Cloud")
+        let y = arc4random() % UInt32(frame.size.height)
+        var randomSize = CGFloat(Float(arc4random()) / Float(UINT32_MAX)) - 0.6
+        if randomSize < 0.0 {
+            randomSize = 0.2
+        }
+        var randomHeight = UInt32(self.frame.size.height / 1.5) + (arc4random() % UInt32(self.frame.size.height / 2))
+        cloud.setScale(randomSize)
+        cloud.position = CGPointMake(self.frame.size.width + cloud.size.width, CGFloat(randomHeight))
+        
+        cloud.runAction(cloudMoveAndRemove)
+        self.addChild(cloud)
     }
 }
 

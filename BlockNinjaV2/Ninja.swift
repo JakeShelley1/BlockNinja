@@ -12,7 +12,6 @@ import SpriteKit
 let groundCategory: UInt32 = 1 << 0
 let ninjaCategory: UInt32 = 1 << 1
 let weaponCategory: UInt32 = 1 << 2 //Ninja's weapons
-let enemyCategory: UInt32 = 1 << 3 //All enemies
 let enemyWeaponCategory: UInt32 = 1 << 4 //Enemy weapons
 
 class Hero {
@@ -20,7 +19,7 @@ class Hero {
     var health: Int
     var ninja = SKSpriteNode(imageNamed: "idle")
     var onGround = false
-
+    
     init(health: Int) {
         self.health = health
     }
@@ -100,39 +99,35 @@ class Hero {
 
 
 class Enemy {
-    
-    var isDead = true
-    var exists = false
+    var enemyMoveAndRemove: SKAction!
+    var isRunning = true
     var health: Int
+    var fakeHealth: Int
     var ninja = SKSpriteNode(imageNamed: "enemyIdle")
     var onGround = false
-    
     init(health: Int) {
         self.health = health
+        self.fakeHealth = health
     }
     
-    
     //Add physics and position to hero
-    func createEnemy(frameWidth: CGFloat)-> SKSpriteNode{
+    func createEnemy(frameWidth: CGFloat, speed: CGFloat, size: CGFloat)-> SKSpriteNode{
+        isRunning = true
         var shuriken = SKSpriteNode(imageNamed: "shuriken")
-        
-        ninja.position = CGPoint(x: frameWidth, y: ninja.size.height * 2.5)
-        let adjustedNinjaSize = CGSize(width: ninja.size.width * 0.6, height: ninja.size.height * 0.6)
+        ninja.position = CGPoint(x: frameWidth + ninja.size.width, y: ninja.size.height * 2)
+        let adjustedNinjaSize = CGSize(width: ninja.size.width * 0.4, height: ninja.size.height * 0.4)
         ninja.physicsBody = SKPhysicsBody(rectangleOfSize: adjustedNinjaSize)
         ninja.physicsBody?.dynamic = true
-        ninja.setScale(0.6)
+        ninja.setScale(size)
         ninja.physicsBody?.restitution = 0.0
         ninja.physicsBody?.allowsRotation = false
         let enemyDistanceToMove = CGFloat(frameWidth * ninja.size.width)
-        let enemyMovement = SKAction.moveByX(-enemyDistanceToMove, y: 0.0, duration: NSTimeInterval(0.013 * enemyDistanceToMove))
-        let removeEnemy = SKAction.removeFromParent()
-        var enemyMoveAndRemove = SKAction.sequence([enemyMovement, removeEnemy])
+        let enemyMovement = SKAction.moveByX(-enemyDistanceToMove, y: 0.0, duration: NSTimeInterval(speed * enemyDistanceToMove))
+        enemyMoveAndRemove = SKAction.sequence([SKAction.waitForDuration(2), enemyMovement, SKAction.runBlock({self.playDeadAnimation(frameWidth)})])
         
-        ninja.physicsBody?.categoryBitMask = enemyCategory
         ninja.physicsBody?.contactTestBitMask = ninjaCategory | groundCategory
         ninja.physicsBody?.collisionBitMask = groundCategory
         
-        isDead = false
         playWalkAnimation()
         ninja.runAction(enemyMoveAndRemove, withKey: "enemyMoveAndRemove")
         
@@ -174,16 +169,13 @@ class Enemy {
     }
     
     func playDeadAnimation(frameWidth: CGFloat) {
-        
+        ninja.physicsBody?.collisionBitMask = groundCategory
         let dead = SKTexture(imageNamed: "enemyDead")
-        let removeEnemy = SKAction.removeFromParent()
-        let delay = SKAction.waitForDuration(2)
         let deadAnim = SKAction.animateWithTextures([dead], timePerFrame: 0.2)
-        let died = SKAction.sequence([deadAnim])
+        let died = SKAction.sequence([deadAnim, SKAction.runBlock({self.ninja.position = CGPoint(x: frameWidth + self.ninja.size.width, y: self.ninja.size.height * 2)}), SKAction.runBlock({self.fakeHealth = self.health})])
         ninja.runAction(died)
-        ninja.position = CGPointMake(frameWidth, ninja.size.height * 2.5)
     }
-
+    
 }
 
 
