@@ -13,6 +13,7 @@ let groundCategory: UInt32 = 1 << 0
 let ninjaCategory: UInt32 = 1 << 1
 let weaponCategory: UInt32 = 1 << 2 //Ninja's weapons
 let enemyWeaponCategory: UInt32 = 1 << 4 //Enemy weapons
+let groundTexture = SKSpriteNode(imageNamed: "Ground")
 
 class Hero {
     var isDead = false
@@ -100,7 +101,7 @@ class Hero {
 
 class Enemy {
     var enemyMoveAndRemove: SKAction!
-    var isRunning = true
+    var isDead = false
     var health: Int
     var jumper: Bool
     var fakeHealth: Int
@@ -114,9 +115,9 @@ class Enemy {
     
     //Add physics and position to hero
     func createEnemy(frameWidth: CGFloat, speed: CGFloat, size: CGFloat)-> SKSpriteNode{
-        isRunning = true
+        //isDead = false
         var shuriken = SKSpriteNode(imageNamed: "shuriken")
-        ninja.position = CGPoint(x: frameWidth + ninja.size.width, y: ninja.size.height * 2)
+        ninja.position = CGPoint(x: frameWidth + ninja.size.width, y: groundTexture.size.height)
         let adjustedNinjaSize = CGSize(width: ninja.size.width * (size / 1.5), height: ninja.size.height * size)
         ninja.physicsBody = SKPhysicsBody(rectangleOfSize: adjustedNinjaSize)
         ninja.physicsBody?.dynamic = true
@@ -129,12 +130,12 @@ class Enemy {
         
         ninja.physicsBody?.contactTestBitMask = ninjaCategory | groundCategory
         ninja.physicsBody?.collisionBitMask = groundCategory
-        
+
         playWalkAnimation()
         ninja.runAction(enemyMoveAndRemove, withKey: "enemyMoveAndRemove")
         
         return ninja
-    }
+     }
     
     func playWalkAnimation() {
         
@@ -174,7 +175,9 @@ class Enemy {
         ninja.physicsBody?.collisionBitMask = groundCategory
         let dead = SKTexture(imageNamed: "enemyDead")
         let deadAnim = SKAction.animateWithTextures([dead], timePerFrame: 0.2)
-        let died = SKAction.sequence([deadAnim, SKAction.runBlock({self.ninja.position = CGPoint(x: frameWidth + (self.ninja.size.width * 2), y: self.ninja.size.height * 3)}), SKAction.runBlock({self.fakeHealth = self.health})])
+        let died = SKAction.sequence([deadAnim, SKAction.runBlock({
+                self.isDead = true
+            })])
         ninja.runAction(died)
     }
     

@@ -14,17 +14,18 @@ class GameScene: SKScene {
     let start = SKSpriteNode(imageNamed: "title")
     let displayPanel = SKSpriteNode(imageNamed: "brownPanel")
     var moving: SKNode!
-    
+
     override func didMoveToView(view: SKView) {
         moving = SKNode()
         self.addChild(moving)
-        moving.speed = 1
+        moving.speed = 0
         var skyColor = SKColor(red: 81.0/255.0, green: 192.0/255.0, blue: 201.0/255.0, alpha: 1.0)
         backgroundColor = skyColor
+        
         start.setScale(2.0)
         self.start.position = CGPointMake(self.frame.size.width/2, CGRectGetMidY(self.frame) + start.size.height)
-        self.addChild(start)
         
+        moving.addChild(start)
         let groundTexture = SKTexture(imageNamed: "Ground")
         groundTexture.filteringMode = .Nearest
         
@@ -50,12 +51,13 @@ class GameScene: SKScene {
         
         for touch: AnyObject in touches {
             let location = touch.locationInNode(self)
-            if self.nodeAtPoint(location) == self.start {
+            if self.nodeAtPoint(location) == self.moving {
                 var scene = PlayScene(size: self.size)
                 let skView = self.view as SKView!
                 skView.ignoresSiblingOrder = true
                 scene.scaleMode = .ResizeFill
                 scene.size = skView.bounds.size
+                self.removeAllChildren()
                 skView.presentScene(scene)
                 
             }
@@ -66,3 +68,4 @@ class GameScene: SKScene {
         /* Called before each frame is rendered */
     }
 }
+

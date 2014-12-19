@@ -67,7 +67,6 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         enemy3.ninja.physicsBody?.categoryBitMask = enemy3Category
         //Ground
         
-        //Moving Ground
         let groundTexture = SKTexture(imageNamed: "Ground")
         groundTexture.filteringMode = .Nearest
         
@@ -79,12 +78,14 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         for var i:CGFloat = 0; i < 2.0 + self.frame.size.width / ( groundTexture.size().width * 0.5 ); ++i {
             let sprite = SKSpriteNode(texture: groundTexture)
             sprite.setScale(1.0)
-            sprite.position = CGPointMake(i * sprite.size.width, sprite.size.height / 4.0)
-            if !hero.isDead {
-                sprite.runAction(moveGroundSpritesForever, withKey: "moveGroundSprite")
-                moving.addChild(sprite)
-            }
+            sprite.position = CGPointMake(i * sprite.size.width, sprite.size.height / 4)
+            sprite.runAction(moveGroundSpritesForever, withKey: "moveGroundSprite")
+            sprite.physicsBody?.dynamic = false
+            moving.addChild(sprite)
+            
+            
         }
+    
 
         //Cloud spawning
         let spawnACloud = SKAction.runBlock({self.spawnCloud()})
@@ -109,7 +110,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         ground.physicsBody?.collisionBitMask = ninjaCategory | enemy1Category | enemy2Category | enemy3Category | enemy4Category
         ground.physicsBody?.restitution = 0.0
         self.addChild(ground)
-
+        
         //Jump and Attack buttons
         attackButton.position = CGPointMake(CGRectGetMidX(self.frame) * 1.5, CGRectGetMinY(self.frame))
         jumpButton.position = CGPointMake(CGRectGetMidX(self.frame) / 2, CGRectGetMinY(self.frame))
@@ -153,8 +154,9 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             }
             
         case enemy2Category | groundCategory:
-            enemy2.jump()
-            
+            if (enemy2.fakeHealth != 0) {
+                enemy2.jump()
+            }
         case enemy3Category | weaponCategory:
             enemy3.fakeHealth = enemy3.fakeHealth - 1
             shuriken.removeFromParent()
@@ -193,10 +195,54 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
     
     //Run everytime frame is rendered
     override func update(currentTime: CFTimeInterval) {
-
+        
+        //RESPAWN ENEMIES -- TODO: MAKE ENEMIES RESPAWN PROPERLY, NEW NINJAS DON'T GET HIT AND DIE, WHEN THEY WALK OFF THE SCREEN THEY ARE GONE FOREVER
+        if enemy1.isDead {
+            enemy1.ninja.removeFromParent()
+            enemy1.isDead = false
+            enemy1.health = 1
+            let delay = CGFloat((arc4random() % 10) / 2)
+            let thisSpeed = CGFloat((arc4random() % 10 ) / 1000)
+            let thisSize = CGFloat((arc4random() % 10) / 10)
+            self.addChild(enemy1.createEnemy(frame.size.width, speed: thisSpeed, size: thisSize))
+        }
+        if enemy2.isDead {
+            enemy2.isDead = false
+            enemy2.ninja.removeFromParent()
+            enemy1.health = 1
+            let delay = CGFloat((arc4random() % 10) / 2)
+            let thisSpeed = CGFloat((arc4random() % 10 ) / 1000)
+            let thisSize = CGFloat((arc4random() % 10) / 10)
+            self.addChild(enemy2.createEnemy(frame.size.width, speed: thisSpeed, size: thisSize))
+        }
+        if enemy3.isDead {
+            enemy3.isDead = false
+            let respawnSequence = SKAction.sequence([SKAction.runBlock({self.enemy3.ninja.removeFromParent()}), SKAction.runBlock({
+                self.enemy3.isDead = false
+                var delay = CGFloat((arc4random() % 10) / 2)
+                var thisSpeed = CGFloat(Float(arc4random()) / Float(UINT32_MAX)) * 0.01
+                var thisSize = CGFloat(Float(arc4random()) / Float(UINT32_MAX))
+                println(delay)
+                println(thisSpeed)
+                println(thisSize)
+                
+                //if size or speed are too low or fast
+                if thisSize < 0.35 || thisSize > 0.7 {
+                    thisSize = 0.55
+                }
+                if thisSpeed < 0.0035 {
+                    thisSpeed = 0.005
+                }
+                
+                self.enemy3.health = 1
+                self.addChild(self.enemy3.createEnemy(self.frame.size.width, speed: thisSpeed, size: thisSize))
+                self.enemy3.ninja.physicsBody?.categoryBitMask = self.enemy3Category
+            })])
+            self.runAction(respawnSequence)
+        }
     }
-    
-    
+
+    //Touches
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
         
         for touch: AnyObject in touches {
@@ -229,7 +275,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
                 self.removeAllChildren()
                 var scene = PlayScene(size: self.size)
                 let skView = self.view as SKView!
-                //skView.ignoresSiblingOrder = true
+                skView.ignoresSiblingOrder = true
                 scene.scaleMode = .ResizeFill
                 scene.size = skView.bounds.size
                 skView.presentScene(scene)
