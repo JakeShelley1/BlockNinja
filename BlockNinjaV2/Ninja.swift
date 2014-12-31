@@ -174,23 +174,33 @@ class Enemy {
     func playDeadAnimation(frameWidth: CGFloat) {
         ninja.physicsBody?.collisionBitMask = groundCategory
         let dead = SKTexture(imageNamed: "enemyDead")
-        let deadAnim = SKAction.animateWithTextures([dead], timePerFrame: 0.2)
-        let died = SKAction.sequence([deadAnim, SKAction.runBlock({
+        let deadAnim = SKAction.animateWithTextures([dead], timePerFrame: 0.4)
+        ninja.runAction(deadAnim)
+        let died = SKAction.sequence([SKAction.waitForDuration(0.2), SKAction.runBlock({
                 self.isDead = true
             })])
         ninja.runAction(died)
     }
-    
 }
 
-
-
-
-
-
-
-
-
-
+class ThrowingStar {
+    var shuriken = SKSpriteNode(imageNamed: "shuriken")
+    var isThrown = false
+    
+    func createThrowingStar()->SKSpriteNode {
+        shuriken.setScale(0.8)
+        var shurikenSize = CGSize(width: shuriken.size.width * 0.3, height: shuriken.size.height * 0.3)
+        shuriken.physicsBody = SKPhysicsBody(rectangleOfSize: shurikenSize)
+        shuriken.physicsBody?.dynamic = true
+        shuriken.physicsBody?.affectedByGravity = false
+        return shuriken
+    }
+    
+    func throwStar(positionx: CGFloat, positiony: CGFloat) {
+        self.shuriken.position = CGPointMake(positionx / 1.5, positiony)
+    }
+    
+    
+}
 
 

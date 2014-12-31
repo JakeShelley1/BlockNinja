@@ -11,6 +11,8 @@ import SpriteKit
 
 class PlayScene: SKScene, SKPhysicsContactDelegate {
     
+    //YOU BROKE THE SIZE OF THE WALL. GO TO GITHUB TO GET THE OLD SIZE BACK
+    
     var cloudTexture = SKTexture(imageNamed: "Cloud")
     var cloudMoveAndRemove = SKAction()
     var moving: SKNode!
@@ -18,7 +20,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
     var skyColor: SKColor!
     let jumpButton = SKSpriteNode(imageNamed: "JumpAttackButton")
     let attackButton = SKSpriteNode(imageNamed: "JumpAttackButton")
-    
+
     let hero = Hero(health: 1)
     let enemy1 = Enemy(health: 1, jumper: false)
     let enemy2 = Enemy(health: 1, jumper: true)
@@ -32,6 +34,9 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
     
     var shuriken: SKSpriteNode!
     
+    let leftEndOfScreen = SKSpriteNode(imageNamed: "endOfScreen")
+    let rightEndOfScreen = SKSpriteNode(imageNamed: "endOfScreen")
+    
     //Colliders
     let groundCategory: UInt32 = 1 << 0
     let ninjaCategory: UInt32 = 1 << 1
@@ -41,6 +46,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
     let enemy3Category: UInt32 = 1 << 5
     let enemy4Category: UInt32 = 1 << 6
     let enemyWeaponCategory: UInt32 = 1 << 7 //Enemy weapons
+    let endOfScreenCategory: UInt32 = 1 << 8 //End of screen
     
     
     override func didMoveToView(view: SKView) {
@@ -52,21 +58,47 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         self.physicsWorld.contactDelegate = self
         self.physicsWorld.gravity = CGVectorMake(0.0, -12.8)
         
+        //End of Screen stuff
+        let endScreenSize = CGSize(width: leftEndOfScreen.size.width, height: leftEndOfScreen.size.height)
+        leftEndOfScreen.physicsBody = SKPhysicsBody(rectangleOfSize: endScreenSize)
+        leftEndOfScreen.position = CGPointMake(-enemy1.ninja.size.width, frame.size.height/2)
+        leftEndOfScreen.hidden = false
+        leftEndOfScreen.physicsBody?.categoryBitMask = endOfScreenCategory
+        leftEndOfScreen.physicsBody?.contactTestBitMask = weaponCategory | enemy1Category | enemy2Category | enemy3Category | enemy4Category
+        leftEndOfScreen.physicsBody?.dynamic = false
+        
+        rightEndOfScreen.physicsBody = SKPhysicsBody(rectangleOfSize: endScreenSize)
+        rightEndOfScreen.position = CGPointMake(frame.size.width / 2, frame.size.height/2)
+        rightEndOfScreen.physicsBody?.categoryBitMask = endOfScreenCategory
+        rightEndOfScreen.physicsBody?.contactTestBitMask = weaponCategory
+        rightEndOfScreen.physicsBody?.dynamic = false
+        
+        self.addChild(leftEndOfScreen)
+        self.addChild(rightEndOfScreen)
+        
         
         hero.createHero(self.frame.width)
         hero.ninja.physicsBody?.categoryBitMask = ninjaCategory
         hero.ninja.physicsBody?.contactTestBitMask = groundCategory
         hero.ninja.physicsBody?.collisionBitMask = groundCategory | enemy1Category | enemy2Category | enemy3Category | enemy4Category
         
+        
+        //when finished, start enemies as isDead = true
         self.addChild(enemy1.createEnemy(frame.size.width, speed: 0.013, size: 0.6))
         self.addChild(enemy2.createEnemy(frame.size.width, speed: 0.011, size: 0.6))
         self.addChild(enemy3.createEnemy(frame.size.width, speed: 0.005, size: 0.4))
+
+        
         self.addChild(hero.ninja)
         enemy1.ninja.physicsBody?.categoryBitMask = enemy1Category
         enemy2.ninja.physicsBody?.categoryBitMask = enemy2Category
         enemy3.ninja.physicsBody?.categoryBitMask = enemy3Category
-        //Ground
+       
+        enemy1.isDead = true
+        enemy2.isDead = true
+        enemy3.isDead = true
         
+        //Ground
         let groundTexture = SKTexture(imageNamed: "Ground")
         groundTexture.filteringMode = .Nearest
         
@@ -112,8 +144,8 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(ground)
         
         //Jump and Attack buttons
-        attackButton.position = CGPointMake(CGRectGetMidX(self.frame) * 1.5, CGRectGetMinY(self.frame))
-        jumpButton.position = CGPointMake(CGRectGetMidX(self.frame) / 2, CGRectGetMinY(self.frame))
+        attackButton.position = CGPointMake(CGRectGetMidX(self.frame) * 1.5, CGRectGetMidY(self.frame))
+        jumpButton.position = CGPointMake(CGRectGetMidX(self.frame) / 2, CGRectGetMidY(self.frame))
         jumpButton.physicsBody?.dynamic = false
         attackButton.physicsBody?.dynamic = false
         attackButton.hidden = true
@@ -140,27 +172,27 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             endGame()
             }
         case enemy1Category | weaponCategory:
-            enemy1.fakeHealth = enemy1.fakeHealth - 1
+            enemy1.health = enemy1.health - 1
             shuriken.removeFromParent()
-            if enemy1.fakeHealth == 0 {
+            if enemy1.health == 0 {
                 enemy1.playDeadAnimation(frame.size.width)
             }
             
         case enemy2Category | weaponCategory:
-            enemy2.fakeHealth = enemy2.fakeHealth - 1
+            enemy2.health = enemy2.health - 1
             shuriken.removeFromParent()
-            if enemy2.fakeHealth == 0 {
+            if enemy2.health == 0 {
                 enemy2.playDeadAnimation(frame.size.width)
             }
             
         case enemy2Category | groundCategory:
-            if (enemy2.fakeHealth != 0) {
+            if (enemy2.health != 0) {
                 enemy2.jump()
             }
         case enemy3Category | weaponCategory:
-            enemy3.fakeHealth = enemy3.fakeHealth - 1
+            enemy3.health = enemy3.health - 1
             shuriken.removeFromParent()
-            if enemy3.fakeHealth == 0 {
+            if enemy3.health == 0 {
                 enemy3.playDeadAnimation(frame.size.width)
             }
 
@@ -186,6 +218,20 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             if !hero.isDead{
                 die()
             }
+            
+        case (weaponCategory | endOfScreenCategory):
+            shuriken.removeFromParent()
+            
+        case (enemy1Category | endOfScreenCategory):
+            enemy1.isDead = true
+            
+        case (enemy3Category | endOfScreenCategory):
+            enemy3.isDead = true
+            
+        case (enemy2Category | endOfScreenCategory):
+            enemy2.isDead = true
+            
+            
         default:
             return
         }
@@ -196,25 +242,51 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
     //Run everytime frame is rendered
     override func update(currentTime: CFTimeInterval) {
         
-        //RESPAWN ENEMIES -- TODO: MAKE ENEMIES RESPAWN PROPERLY, NEW NINJAS DON'T GET HIT AND DIE, WHEN THEY WALK OFF THE SCREEN THEY ARE GONE FOREVER
+        //RESPAWN ENEMIES -- TODO: MAKE ENEMIES RESPAWN PROPERLY, NEW NINJAS DON'T GET HIT AND DIE
         if enemy1.isDead {
-            enemy1.ninja.removeFromParent()
             enemy1.isDead = false
-            enemy1.health = 1
-            let delay = CGFloat((arc4random() % 10) / 2)
-            let thisSpeed = CGFloat((arc4random() % 10 ) / 1000)
-            let thisSize = CGFloat((arc4random() % 10) / 10)
-            self.addChild(enemy1.createEnemy(frame.size.width, speed: thisSpeed, size: thisSize))
+            let respawnSequence = SKAction.sequence([SKAction.runBlock({self.enemy1.ninja.removeFromParent()}), SKAction.runBlock({
+                self.enemy1.isDead = false
+                var delay = CGFloat((arc4random() % 10) / 2)
+                var thisSpeed = CGFloat(Float(arc4random()) / Float(UINT32_MAX)) * 0.01
+                var thisSize = CGFloat(Float(arc4random()) / Float(UINT32_MAX))
+                
+                //if size or speed are too low or fast
+                if thisSize < 0.35 || thisSize > 0.7 {
+                    thisSize = 0.55
+                }
+                if thisSpeed < 0.0035 {
+                    thisSpeed = 0.005
+                }
+                
+                self.enemy1.health = 1
+                self.addChild(self.enemy1.createEnemy(self.frame.size.width, speed: thisSpeed, size: thisSize))
+                self.enemy1.ninja.physicsBody?.categoryBitMask = self.enemy1Category
+            })])
+            self.runAction(respawnSequence)
         }
         if enemy2.isDead {
             enemy2.isDead = false
-            enemy2.ninja.removeFromParent()
-            enemy1.health = 1
-            let delay = CGFloat((arc4random() % 10) / 2)
-            let thisSpeed = CGFloat((arc4random() % 10 ) / 1000)
-            let thisSize = CGFloat((arc4random() % 10) / 10)
-            self.addChild(enemy2.createEnemy(frame.size.width, speed: thisSpeed, size: thisSize))
+            let respawnSequence = SKAction.sequence([SKAction.runBlock({self.enemy2.ninja.removeFromParent()}), SKAction.runBlock({
+                self.enemy2.isDead = false
+                var delay = CGFloat((arc4random() % 10) / 2)
+                var thisSpeed = CGFloat(Float(arc4random()) / Float(UINT32_MAX)) * 0.01
+                var thisSize = CGFloat(Float(arc4random()) / Float(UINT32_MAX))
+                //if size or speed are too low or fast
+                if thisSize < 0.35 || thisSize > 0.7 {
+                    thisSize = 0.55
+                }
+                if thisSpeed < 0.0035 {
+                    thisSpeed = 0.005
+                }
+                
+                self.enemy2.health = 1
+                self.addChild(self.enemy2.createEnemy(self.frame.size.width, speed: thisSpeed, size: thisSize))
+                self.enemy2.ninja.physicsBody?.categoryBitMask = self.enemy2Category
+            })])
+            self.runAction(respawnSequence)
         }
+        
         if enemy3.isDead {
             enemy3.isDead = false
             let respawnSequence = SKAction.sequence([SKAction.runBlock({self.enemy3.ninja.removeFromParent()}), SKAction.runBlock({
@@ -222,10 +294,6 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
                 var delay = CGFloat((arc4random() % 10) / 2)
                 var thisSpeed = CGFloat(Float(arc4random()) / Float(UINT32_MAX)) * 0.01
                 var thisSize = CGFloat(Float(arc4random()) / Float(UINT32_MAX))
-                println(delay)
-                println(thisSpeed)
-                println(thisSize)
-                
                 //if size or speed are too low or fast
                 if thisSize < 0.35 || thisSize > 0.7 {
                     thisSize = 0.55
@@ -251,14 +319,14 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             if (CGRectContainsPoint(attackButton.frame, touch.locationInNode(self)) & (!hero.isDead)) {
                 shuriken = hero.throwStar()
                 shuriken.physicsBody?.categoryBitMask = weaponCategory
-                shuriken.physicsBody?.contactTestBitMask = enemy1Category | enemy2Category | enemy3Category
+                shuriken.physicsBody?.contactTestBitMask = enemy1Category | enemy2Category | enemy3Category | endOfScreenCategory
                 shuriken.physicsBody?.collisionBitMask = 0
                 self.addChild(shuriken)
                 shuriken.physicsBody?.velocity = CGVectorMake(20, 0)
                 shuriken.physicsBody?.applyImpulse(CGVectorMake(20, 0))
             }
             
-            if (CGRectContainsPoint(jumpButton.frame, touch.locationInNode(displayPanel)) & (hero.onGround) & (!hero.isDead))  {
+            if (CGRectContainsPoint(jumpButton.frame, touch.locationInNode(self)) & (hero.onGround) & (!hero.isDead))  {
                 hero.jump()
             }
             
