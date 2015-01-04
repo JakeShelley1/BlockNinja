@@ -85,6 +85,7 @@
 		23371DA41A09586800F52BD7 /* BlockNinjaV2 */ = {
 			isa = PBXGroup;
 			children = (
+				2358148C1A58CB7A00DAA1DB /* Resources */,
 				23371DA71A09586800F52BD7 /* AppDelegate.swift */,
 				23371DA91A09586800F52BD7 /* GameScene.sks */,
 				23371DAB1A09586800F52BD7 /* GameScene.swift */,
@@ -122,6 +123,13 @@
 				23371DC01A09586800F52BD7 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		2358148C1A58CB7A00DAA1DB /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

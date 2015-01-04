@@ -9,6 +9,7 @@
 import Foundation
 import SpriteKit
 
+
 let groundCategory: UInt32 = 1 << 0
 let ninjaCategory: UInt32 = 1 << 1
 let weaponCategory: UInt32 = 1 << 2 //Ninja's weapons
@@ -75,7 +76,6 @@ class Hero {
         shuriken.physicsBody = SKPhysicsBody(rectangleOfSize: shurikenSize)
         shuriken.physicsBody?.dynamic = true
         shuriken.physicsBody?.affectedByGravity = false
-        
         playThrowAnimation()
         return shuriken
     }
@@ -126,7 +126,8 @@ class Enemy {
         ninja.physicsBody?.allowsRotation = false
         let enemyDistanceToMove = CGFloat(frameWidth * ninja.size.width)
         let enemyMovement = SKAction.moveByX(-enemyDistanceToMove, y: 0.0, duration: NSTimeInterval(speed * enemyDistanceToMove))
-        enemyMoveAndRemove = SKAction.sequence([SKAction.waitForDuration(2), enemyMovement, SKAction.runBlock({self.playDeadAnimation(frameWidth)})])
+        let delaytime = NSTimeInterval(arc4random_uniform(4))
+        enemyMoveAndRemove = SKAction.sequence([SKAction.waitForDuration(delaytime), enemyMovement, SKAction.runBlock({self.playDeadAnimation(frameWidth)})])
         
         ninja.physicsBody?.contactTestBitMask = ninjaCategory | groundCategory
         ninja.physicsBody?.collisionBitMask = groundCategory
@@ -176,6 +177,8 @@ class Enemy {
         let dead = SKTexture(imageNamed: "enemyDead")
         let deadAnim = SKAction.animateWithTextures([dead], timePerFrame: 0.4)
         ninja.runAction(deadAnim)
+        let enemyDistanceToMove = CGFloat(frameWidth * ninja.size.width)
+        let enemyMovement = SKAction.moveByX(-enemyDistanceToMove, y: 0.0, duration: NSTimeInterval(0.006 * enemyDistanceToMove))
         let died = SKAction.sequence([SKAction.waitForDuration(0.2), SKAction.runBlock({
                 self.isDead = true
             })])

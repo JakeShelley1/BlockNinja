@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BlockNinjaV2/PlayScene.swift"
-            timestampString = "441681772.568062"
+            timestampString = "442028523.987678"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "156"
-            endingLineNumber = "156"
+            startingLineNumber = "161"
+            endingLineNumber = "161"
             landmarkName = "didMoveToView(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BlockNinjaV2/PlayScene.swift"
-            timestampString = "441681772.568062"
+            timestampString = "442028523.987678"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "24"
-            endingLineNumber = "24"
+            startingLineNumber = "26"
+            endingLineNumber = "26"
             landmarkName = "PlayScene"
             landmarkType = "3">
          </BreakpointContent>
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BlockNinjaV2/PlayScene.swift"
-            timestampString = "441681772.568062"
+            timestampString = "442028523.987678"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "401"
-            endingLineNumber = "401"
+            startingLineNumber = "413"
+            endingLineNumber = "413"
             landmarkName = "createEndPanel()"
             landmarkType = "5">
          </BreakpointContent>
@@ -90,11 +90,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BlockNinjaV2/PlayScene.swift"
-            timestampString = "441681772.568062"
+            timestampString = "442028523.987678"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "355"
-            endingLineNumber = "355"
+            startingLineNumber = "367"
+            endingLineNumber = "367"
             landmarkName = "die()"
             landmarkType = "5">
          </BreakpointContent>
@@ -106,7 +106,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BlockNinjaV2/Ninja.swift"
-            timestampString = "440635059.547653"
+            timestampString = "442014876.910317"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "154"
@@ -122,13 +122,101 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BlockNinjaV2/Ninja.swift"
-            timestampString = "441484443.193338"
+            timestampString = "442014876.910317"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "160"
             endingLineNumber = "160"
             landmarkName = "playJumpAnimation()"
             landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "BlockNinjaV2/PlayScene.swift"
+            timestampString = "442028523.987678"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "14"
+            endingLineNumber = "14"
+            landmarkName = "PlayScene"
+            landmarkType = "3">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "BlockNinjaV2.PlayScene.score.getter : Swift.Int"
+                  moduleName = "BlockNinjaV2"
+                  urlString = "file:///Users/Jake/Desktop/IOSDev/BlockNinjaV2/BlockNinjaV2/PlayScene.swift"
+                  timestampString = "442028524.27432"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "14"
+                  endingLineNumber = "14"
+                  offsetFromSymbolStart = "12">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "BlockNinjaV2.PlayScene.score.setter : Swift.Int"
+                  moduleName = "BlockNinjaV2"
+                  urlString = "file:///Users/Jake/Desktop/IOSDev/BlockNinjaV2/BlockNinjaV2/PlayScene.swift"
+                  timestampString = "442028524.274518"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "14"
+                  endingLineNumber = "14"
+                  offsetFromSymbolStart = "16">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "BlockNinjaV2.PlayScene.init (BlockNinjaV2.PlayScene.Type)(size : C.CGSize) -&gt; BlockNinjaV2.PlayScene"
+                  moduleName = "BlockNinjaV2"
+                  urlString = "file:///Users/Jake/Desktop/IOSDev/BlockNinjaV2/BlockNinjaV2/PlayScene.swift"
+                  timestampString = "442028524.274864"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "14"
+                  endingLineNumber = "14"
+                  offsetFromSymbolStart = "25">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "BlockNinjaV2.PlayScene.init (BlockNinjaV2.PlayScene.Type)() -&gt; BlockNinjaV2.PlayScene"
+                  moduleName = "BlockNinjaV2"
+                  urlString = "file:///Users/Jake/Desktop/IOSDev/BlockNinjaV2/BlockNinjaV2/PlayScene.swift"
+                  timestampString = "442028524.275038"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "14"
+                  endingLineNumber = "14"
+                  offsetFromSymbolStart = "15">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "BlockNinjaV2.PlayScene.init (BlockNinjaV2.PlayScene.Type)(coder : ObjectiveC.NSCoder) -&gt; Swift.Optional&lt;BlockNinjaV2.PlayScene&gt;"
+                  moduleName = "BlockNinjaV2"
+                  urlString = "file:///Users/Jake/Desktop/IOSDev/BlockNinjaV2/BlockNinjaV2/PlayScene.swift"
+                  timestampString = "442028524.2752"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "14"
+                  endingLineNumber = "14"
+                  offsetFromSymbolStart = "19">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

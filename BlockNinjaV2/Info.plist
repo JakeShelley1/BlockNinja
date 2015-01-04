@@ -32,6 +32,10 @@
 	</array>
 	<key>UIStatusBarHidden</key>
 	<true/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>CFSamuraiBob.ttf</string>
+	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

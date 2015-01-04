@@ -6,12 +6,17 @@
 //  Copyright (c) 2014 Jake. All rights reserved.
 //
 
+//TODO: CHANGE ALL THE SKNODES THAT ARE JUST WORDS INTO SKLABELNODES NOW THAT THE FONT WORKS
+
+
 import Foundation
 import SpriteKit
 
 class PlayScene: SKScene, SKPhysicsContactDelegate {
-    
-    //YOU BROKE THE SIZE OF THE WALL. GO TO GITHUB TO GET THE OLD SIZE BACK
+        
+    var score = 0
+    //where is CFSamuraiBob.ttf saved???
+    let scoreText = SKLabelNode(fontNamed: "CF Samurai Bob")
     
     var cloudTexture = SKTexture(imageNamed: "Cloud")
     var cloudMoveAndRemove = SKAction()
@@ -23,7 +28,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
 
     let hero = Hero(health: 1)
     let enemy1 = Enemy(health: 1, jumper: false)
-    let enemy2 = Enemy(health: 1, jumper: true)
+    let enemy2 = Enemy(health: 1, jumper: false)
     let enemy3 = Enemy(health: 1, jumper: false)
     
     let playButton = SKSpriteNode(imageNamed: "button")
@@ -48,7 +53,6 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
     let enemyWeaponCategory: UInt32 = 1 << 7 //Enemy weapons
     let endOfScreenCategory: UInt32 = 1 << 8 //End of screen
     
-    
     override func didMoveToView(view: SKView) {
         moving = SKNode()
         self.addChild(moving)
@@ -57,6 +61,13 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         self.backgroundColor = skyColor
         self.physicsWorld.contactDelegate = self
         self.physicsWorld.gravity = CGVectorMake(0.0, -12.8)
+        
+        //Score
+        self.scoreText.text = "0"
+        self.scoreText.fontSize = 50
+        self.scoreText.position = CGPoint(x: self.frame.width/1.05, y: self.frame.height/1.1)
+        self.scoreText.fontColor = UIColor.blackColor()
+        self.addChild(scoreText)
         
         //End of Screen stuff
         let endScreenSize = CGSize(width: leftEndOfScreen.size.width, height: leftEndOfScreen.size.height)
@@ -68,7 +79,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         leftEndOfScreen.physicsBody?.dynamic = false
         
         rightEndOfScreen.physicsBody = SKPhysicsBody(rectangleOfSize: endScreenSize)
-        rightEndOfScreen.position = CGPointMake(frame.size.width / 2, frame.size.height/2)
+        rightEndOfScreen.position = CGPointMake(frame.size.width + enemy1.ninja.size.width, frame.size.height/2)
         rightEndOfScreen.physicsBody?.categoryBitMask = endOfScreenCategory
         rightEndOfScreen.physicsBody?.contactTestBitMask = weaponCategory
         rightEndOfScreen.physicsBody?.dynamic = false
@@ -114,11 +125,8 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             sprite.runAction(moveGroundSpritesForever, withKey: "moveGroundSprite")
             sprite.physicsBody?.dynamic = false
             moving.addChild(sprite)
-            
-            
         }
     
-
         //Cloud spawning
         let spawnACloud = SKAction.runBlock({self.spawnCloud()})
         let spawnThenDelayCloud = SKAction.sequence([spawnACloud, SKAction.waitForDuration(6.0)])
@@ -175,6 +183,8 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             enemy1.health = enemy1.health - 1
             shuriken.removeFromParent()
             if enemy1.health == 0 {
+                score++
+                self.scoreText.text = String(self.score)
                 enemy1.playDeadAnimation(frame.size.width)
             }
             
@@ -182,17 +192,21 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             enemy2.health = enemy2.health - 1
             shuriken.removeFromParent()
             if enemy2.health == 0 {
+                score++
+                self.scoreText.text = String(self.score)
                 enemy2.playDeadAnimation(frame.size.width)
             }
             
         case enemy2Category | groundCategory:
-            if (enemy2.health != 0) {
+            if (enemy2.health != 0 && enemy2.jumper == true) {
                 enemy2.jump()
             }
         case enemy3Category | weaponCategory:
             enemy3.health = enemy3.health - 1
             shuriken.removeFromParent()
             if enemy3.health == 0 {
+                score++
+                self.scoreText.text = String(self.score)
                 enemy3.playDeadAnimation(frame.size.width)
             }
 
@@ -221,7 +235,8 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             
         case (weaponCategory | endOfScreenCategory):
             shuriken.removeFromParent()
-            
+
+        //death of enemy
         case (enemy1Category | endOfScreenCategory):
             enemy1.isDead = true
             
