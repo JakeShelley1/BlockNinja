@@ -11,10 +11,16 @@ import SpriteKit
 
 class GameScene: SKScene {
     
-    let start = SKSpriteNode(imageNamed: "title")
-    let displayPanel = SKSpriteNode(imageNamed: "brownPanel")
+    let startButton = SKSpriteNode(imageNamed: "otherButton")
+    let shopButton = SKSpriteNode(imageNamed: "otherButton")
+    let title = SKLabelNode(fontNamed: "CF Samurai Bob")
     var moving: SKNode!
-
+    var highScoreText = SKLabelNode(fontNamed: "CF Samurai Bob")
+    let startText = SKLabelNode(fontNamed: "CF Samurai Bob")
+    let shopText = SKLabelNode(fontNamed: "CF Samurai Bob")
+    
+    var highScore = NSUserDefaults.standardUserDefaults().integerForKey("highscore")
+    
     override func didMoveToView(view: SKView) {
         moving = SKNode()
         self.addChild(moving)
@@ -22,10 +28,32 @@ class GameScene: SKScene {
         var skyColor = SKColor(red: 81.0/255.0, green: 192.0/255.0, blue: 201.0/255.0, alpha: 1.0)
         backgroundColor = skyColor
         
-        start.setScale(2.0)
-        self.start.position = CGPointMake(self.frame.size.width/2, CGRectGetMidY(self.frame) + start.size.height)
         
-        moving.addChild(start)
+        self.startButton.setScale(1.5)
+        self.startButton.position = CGPointMake((self.frame.size.width/2) - ((self.frame.width/2) * 0.5), CGRectGetMidY(self.frame))
+        self.shopButton.setScale(1.5)
+        self.shopButton.position = CGPointMake((self.frame.size.width/2) + ((self.frame.width/2) * 0.5), CGRectGetMidY(self.frame))
+        self.addChild(self.shopButton)
+        self.addChild(self.startButton)
+        self.startText.text = ("START")
+        startText.fontColor = UIColor.blackColor()
+        startText.fontSize = 50
+        shopText.text = ("SHOP")
+        shopText.fontColor = UIColor.blackColor()
+        shopText.fontSize = 50
+        startText.position = CGPointMake(0, -self.startButton.size.height / 8)
+        shopText.position = CGPointMake(0, -self.shopButton.size.height / 8)
+        self.startButton.addChild(startText)
+        self.shopButton.addChild(shopText)
+        
+        //Text
+        title.text = "BLOCK NINJA"
+        title.fontSize = 130
+        title.fontColor = UIColor.blackColor()
+        title.position = CGPoint(x: frame.width/2, y: frame.height/1.35)
+        self.addChild(title)
+        
+        //Probably delete all moving stuff later, unless title screen is going to be cooler
         let groundTexture = SKTexture(imageNamed: "Ground")
         groundTexture.filteringMode = .Nearest
         
@@ -44,6 +72,16 @@ class GameScene: SKScene {
             
             
         }
+        
+        //Display highscore
+        if (highScore != 0) {
+            highScoreText.text = ("HIGH SCORE: " + String(highScore))
+            highScoreText.fontColor = UIColor.blackColor()
+            highScoreText.fontSize = 55
+            highScoreText.position = CGPoint(x: frame.width/2, y: frame.height/1.5)
+            
+            self.addChild(highScoreText)
+        }
     }
     
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
@@ -51,7 +89,7 @@ class GameScene: SKScene {
         
         for touch: AnyObject in touches {
             let location = touch.locationInNode(self)
-            if self.nodeAtPoint(location) == self.moving {
+            if self.nodeAtPoint(location) == self.startButton {
                 var scene = PlayScene(size: self.size)
                 let skView = self.view as SKView!
                 skView.ignoresSiblingOrder = true

@@ -6,18 +6,16 @@
 //  Copyright (c) 2014 Jake. All rights reserved.
 //
 
-//TODO: CHANGE ALL THE SKNODES THAT ARE JUST WORDS INTO SKLABELNODES NOW THAT THE FONT WORKS
 
+//*******TODO: CHANGE ALL THE SKNODES THAT ARE JUST WORDS INTO SKLABELNODES NOW THAT THE FONT WORKS
 
 import Foundation
 import SpriteKit
 
 class PlayScene: SKScene, SKPhysicsContactDelegate {
-        
+
     var score = 0
-    //where is CFSamuraiBob.ttf saved???
     let scoreText = SKLabelNode(fontNamed: "CF Samurai Bob")
-    
     var cloudTexture = SKTexture(imageNamed: "Cloud")
     var cloudMoveAndRemove = SKAction()
     var moving: SKNode!
@@ -94,7 +92,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         hero.ninja.physicsBody?.collisionBitMask = groundCategory | enemy1Category | enemy2Category | enemy3Category | enemy4Category
         
         
-        //when finished, start enemies as isDead = true
+        //*****when finished, start enemies as isDead = true
         self.addChild(enemy1.createEnemy(frame.size.width, speed: 0.013, size: 0.6))
         self.addChild(enemy2.createEnemy(frame.size.width, speed: 0.011, size: 0.6))
         self.addChild(enemy3.createEnemy(frame.size.width, speed: 0.005, size: 0.4))
@@ -105,9 +103,9 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         enemy2.ninja.physicsBody?.categoryBitMask = enemy2Category
         enemy3.ninja.physicsBody?.categoryBitMask = enemy3Category
        
-        enemy1.isDead = true
-        enemy2.isDead = true
-        enemy3.isDead = true
+        //enemy1.isDead = true
+        //enemy2.isDead = true
+        //enemy3.isDead = true
         
         //Ground
         let groundTexture = SKTexture(imageNamed: "Ground")
@@ -345,7 +343,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
                 hero.jump()
             }
             
-            if (CGRectContainsPoint(menuButton.frame, touch.locationInNode(displayPanel))) {
+            if (CGRectContainsPoint(self.menuButton.frame, touch.locationInNode(displayPanel))) {
                 if let scene = GameScene.unarchiveFromFile("GameScene") as? GameScene {
                     let skView = self.view as SKView!
                     skView.ignoresSiblingOrder = true
@@ -354,7 +352,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
                 }
             }
             
-            if (CGRectContainsPoint(playButton.frame, touch.locationInNode(displayPanel))) {
+            if (CGRectContainsPoint(self.playButton.frame, touch.locationInNode(displayPanel))) {
                 self.removeAllChildren()
                 var scene = PlayScene(size: self.size)
                 let skView = self.view as SKView!
@@ -376,6 +374,9 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         SKAction.sequence([SKAction.runBlock({
             self.backgroundColor = SKColor(red: 1, green: 0, blue: 0, alpha: 1.0)
         }), SKAction.waitForDuration(NSTimeInterval(0.08)), SKAction.runBlock({self.backgroundColor = SKColor(red: 81.0/255.0, green: 192.0/255.0, blue: 201.0/255.0, alpha: 1.0)})])
+        
+        highScoring()
+        
     }
     
     //Game Over Screen
@@ -395,22 +396,22 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         let playAgainText = SKSpriteNode(imageNamed: "playAgain")
         let menuText = SKSpriteNode(imageNamed: "menu")
         let gameOverText = SKSpriteNode(imageNamed: "gameOver")
-        playAgainText.position = CGPointMake(0, playButton.size.height/4)
+        playAgainText.position = CGPointMake(0, self.playButton.size.height/4)
         gameOverText.position = CGPointMake(0, displayPanel.size.height/4)
-        menuText.position = CGPointMake(0, menuButton.size.height/4)
+        menuText.position = CGPointMake(0, self.menuButton.size.height/4)
         gameOverText.setScale(0.3)
         playAgainText.setScale(0.7)
         menuText.setScale(0.7)
         displayPanel.zPosition = 10
-        menuButton.addChild(menuText)
-        playButton.addChild(playAgainText)
-        menuButton.position = CGPointMake(0, displayPanel.size.height - playButton.size.height*2.5)
+        self.menuButton.addChild(menuText)
+        self.playButton.addChild(playAgainText)
+        self.menuButton.position = CGPointMake(0, displayPanel.size.height - self.playButton.size.height*2.5)
         displayPanel.setScale(3)
-        playButton.setScale(0.3)
-        menuButton.setScale(0.3)
+        self.playButton.setScale(0.3)
+        self.menuButton.setScale(0.3)
         displayPanel.addChild(gameOverText)
-        displayPanel.addChild(playButton)
-        displayPanel.addChild(menuButton)
+        displayPanel.addChild(self.playButton)
+        displayPanel.addChild(self.menuButton)
         displayPanel.position = CGPointMake(frame.size.width/2, frame.size.height + displayPanel.size.height)
         self.addChild(displayPanel)
         let moveDisplay = SKAction.moveByX(0, y: -(frame.size.height/2 + displayPanel.size.height), duration: 1)
@@ -433,9 +434,18 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         cloud.runAction(cloudMoveAndRemove)
         self.addChild(cloud)
     }
+    
+    func highScoring() {
+        NSUserDefaults.standardUserDefaults().integerForKey("highscore")
+    
+        //Check if score is higher than NSUserDefaults stored value and change NSUserDefaults stored value if it's true
+        if score > NSUserDefaults.standardUserDefaults().integerForKey("highscore") {
+            NSUserDefaults.standardUserDefaults().setInteger(score, forKey: "highscore")
+            NSUserDefaults.standardUserDefaults().synchronize()
+        }
+        
+        NSUserDefaults.standardUserDefaults().integerForKey("highscore")
+    
+    }
+    
 }
-
-
-
-
-
