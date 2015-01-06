@@ -14,6 +14,7 @@ import SpriteKit
 
 class PlayScene: SKScene, SKPhysicsContactDelegate {
 
+    
     var score = 0
     let scoreText = SKLabelNode(fontNamed: "CF Samurai Bob")
     var cloudTexture = SKTexture(imageNamed: "Cloud")
@@ -23,7 +24,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
     var skyColor: SKColor!
     let jumpButton = SKSpriteNode(imageNamed: "JumpAttackButton")
     let attackButton = SKSpriteNode(imageNamed: "JumpAttackButton")
-
+    
     let hero = Hero(health: 1)
     let enemy1 = Enemy(health: 1, jumper: false)
     let enemy2 = Enemy(health: 1, jumper: false)
@@ -34,6 +35,21 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
     let menuButton = SKSpriteNode(imageNamed: "button")
     let pressedMenuButton = SKSpriteNode(imageNamed: "pressedButton")
     let displayPanel = SKSpriteNode(imageNamed: "brownPanel")
+    let playAgainText = SKLabelNode(fontNamed: "CF Samurai Bob")
+    let menuText = SKLabelNode(fontNamed: "CF Samurai Bob")
+    let gameOverText = SKLabelNode(fontNamed: "CF Samurai Bob")
+    
+    let pauseText = SKLabelNode(fontNamed: "CF Samurai Bob")
+    let pauseMenuText = SKLabelNode(fontNamed: "CF Samurai Bob")
+    let resumeText = SKLabelNode(fontNamed: "CF Samurai Bob")
+    let restartText = SKLabelNode(fontNamed: "CF Samurai Bob")
+    let resumeButton = SKSpriteNode(imageNamed: "button")
+    let pauseMenuButton = SKSpriteNode(imageNamed: "button")
+    let restartButton = SKSpriteNode(imageNamed: "button")
+    
+    
+    let pausePicture = SKSpriteNode(imageNamed: "pausePic")
+    let pauseButton = SKSpriteNode(imageNamed: "smallButton")
     
     var shuriken: SKSpriteNode!
     
@@ -52,6 +68,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
     let endOfScreenCategory: UInt32 = 1 << 8 //End of screen
     
     override func didMoveToView(view: SKView) {
+        
         moving = SKNode()
         self.addChild(moving)
         moving.speed = 1
@@ -85,7 +102,13 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(leftEndOfScreen)
         self.addChild(rightEndOfScreen)
         
+        //Pause Button
+        pauseButton.setScale(1)
+        pauseButton.position = CGPointMake(CGRectGetMinX(self.frame) + (1.05 * pauseButton.size.width), CGRectGetMaxY(self.frame) - (1.05 * pauseButton.size.height))
+        pauseButton.addChild(pausePicture)
+        self.addChild(pauseButton)
         
+        //Create player's ninja
         hero.createHero(self.frame.width)
         hero.ninja.physicsBody?.categoryBitMask = ninjaCategory
         hero.ninja.physicsBody?.contactTestBitMask = groundCategory
@@ -96,13 +119,12 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(enemy1.createEnemy(frame.size.width, speed: 0.013, size: 0.6))
         self.addChild(enemy2.createEnemy(frame.size.width, speed: 0.011, size: 0.6))
         self.addChild(enemy3.createEnemy(frame.size.width, speed: 0.005, size: 0.4))
-
-        
         self.addChild(hero.ninja)
+        
+        //Add enemies (set isDead to true later)
         enemy1.ninja.physicsBody?.categoryBitMask = enemy1Category
         enemy2.ninja.physicsBody?.categoryBitMask = enemy2Category
         enemy3.ninja.physicsBody?.categoryBitMask = enemy3Category
-       
         //enemy1.isDead = true
         //enemy2.isDead = true
         //enemy3.isDead = true
@@ -255,7 +277,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
     //Run everytime frame is rendered
     override func update(currentTime: CFTimeInterval) {
         
-        //RESPAWN ENEMIES -- TODO: MAKE ENEMIES RESPAWN PROPERLY, NEW NINJAS DON'T GET HIT AND DIE
+        //RESPAWN ENEMIES -- TODO: make enemies with the ability to jump (and throw stars)
         if enemy1.isDead {
             enemy1.isDead = false
             let respawnSequence = SKAction.sequence([SKAction.runBlock({self.enemy1.ninja.removeFromParent()}), SKAction.runBlock({
@@ -356,10 +378,19 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
                 self.removeAllChildren()
                 var scene = PlayScene(size: self.size)
                 let skView = self.view as SKView!
-                skView.ignoresSiblingOrder = true
+                skView.ignoresSiblingOrder = false
                 scene.scaleMode = .ResizeFill
                 scene.size = skView.bounds.size
                 skView.presentScene(scene)
+            }
+            
+            if (CGRectContainsPoint(self.pauseButton.frame, touch.locationInNode(self)) & (self.view?.paused == false)) {
+                pauseGame()
+                self.view?.paused = true
+            }
+            
+            if (CGRectContainsPoint(self.pauseButton.frame, touch.locationInNode(self)) & (self.view?.paused == true)) {
+                self.view?.paused = false
             }
         }
     }
@@ -393,15 +424,19 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
     
     //Create end game panel
     func createEndPanel() {
-        let playAgainText = SKSpriteNode(imageNamed: "playAgain")
-        let menuText = SKSpriteNode(imageNamed: "menu")
-        let gameOverText = SKSpriteNode(imageNamed: "gameOver")
-        playAgainText.position = CGPointMake(0, self.playButton.size.height/4)
+        playAgainText.fontSize = 45
+        playAgainText.fontColor = UIColor.blackColor()
+        playAgainText.position = CGPointMake(0, -self.playButton.size.height/7)
         gameOverText.position = CGPointMake(0, displayPanel.size.height/4)
-        menuText.position = CGPointMake(0, self.menuButton.size.height/4)
-        gameOverText.setScale(0.3)
-        playAgainText.setScale(0.7)
-        menuText.setScale(0.7)
+        menuText.position = CGPointMake(0, -self.menuButton.size.height/7)
+        menuText.fontSize = 45
+        menuText.fontColor = UIColor.blackColor()
+        gameOverText.fontSize = 23
+        gameOverText.fontColor = UIColor.blackColor()
+        gameOverText.text = "GAME OVER"
+        menuText.text = "MENU"
+        playAgainText.text = "PLAY AGAIN"
+        
         displayPanel.zPosition = 10
         self.menuButton.addChild(menuText)
         self.playButton.addChild(playAgainText)
@@ -448,4 +483,32 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
     
     }
     
+    func pauseGame() {
+        
+        pauseMenuText.fontSize = 45
+        pauseMenuText.fontColor = UIColor.blackColor()
+        pauseMenuText.text = ("MENU")
+        resumeText.fontSize = 45
+        resumeText.fontColor = UIColor.blackColor()
+        resumeText.text = ("RESUME")
+        restartText.fontSize = 45
+        restartText.fontColor = UIColor.blackColor()
+        restartText.text = ("NEW GAME")
+        pauseMenuButton.setScale(0.8)
+        pauseMenuButton.position = CGPointMake((frame.size.width/2) + (pauseMenuButton.size.width * 1.2), (frame.size.height/2 + pauseMenuButton.size.height))
+        resumeButton.setScale(0.8)
+        resumeButton.position = CGPointMake((frame.size.width/2) - (pauseMenuButton.size.width * 1.2), (frame.size.height/2 + pauseMenuButton.size.height))
+        restartButton.setScale(0.8)
+        restartButton.position = CGPointMake((frame.size.width/2), (frame.size.height/2 - pauseMenuButton.size.height))
+        self.addChild(pauseMenuButton)
+        self.addChild(restartButton)
+        self.addChild(resumeButton)
+        pauseMenuButton.addChild(pauseMenuText)
+        resumeButton.addChild(resumeText)
+        restartButton.addChild(restartText)
+        pauseText.position = CGPointMake(frame.size.width/2, frame.size.height/2 + pauseMenuButton.size.height * 2)
+        self.addChild(pauseText)
+    }
+
 }
+
