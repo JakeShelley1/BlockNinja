@@ -9,21 +9,28 @@
 import Foundation
 import SpriteKit
 
-
+//Colliders
 let groundCategory: UInt32 = 1 << 0
 let ninjaCategory: UInt32 = 1 << 1
 let weaponCategory: UInt32 = 1 << 2 //Ninja's weapons
-let enemyWeaponCategory: UInt32 = 1 << 4 //Enemy weapons
+let enemy1Category: UInt32 = 1 << 3
+let enemy2Category: UInt32 = 1 << 4
+let enemy3Category: UInt32 = 1 << 5
+let enemy4Category: UInt32 = 1 << 6
+let enemyWeaponCategory: UInt32 = 1 << 7 //Enemy weapons
+let endOfScreenCategory: UInt32 = 1 << 8 //End of screen
+
 let groundTexture = SKSpriteNode(imageNamed: "Ground")
 
 class Hero {
     var isDead = false
     var health: Int
+    var inventory: Int
     var ninja = SKSpriteNode(imageNamed: "idle")
     var onGround = false
-    
-    init(health: Int) {
+    init(health: Int, inventory: Int) {
         self.health = health
+        self.inventory = inventory
     }
     
     
@@ -94,10 +101,8 @@ class Hero {
         ninja.runAction(deadAnim)
         ninja.physicsBody?.applyImpulse(CGVectorMake(0, 90))
     }
+
 }
-
-
-
 
 class Enemy {
     var enemyMoveAndRemove: SKAction!
@@ -186,24 +191,29 @@ class Enemy {
     }
 }
 
+//TODO: make throwing stars rotate, make throwing stars regenerate over time
+
 class ThrowingStar {
-    var shuriken = SKSpriteNode(imageNamed: "shuriken")
     var isThrown = false
+    var shuriken = SKSpriteNode(imageNamed: "shuriken")
     
-    func createThrowingStar()->SKSpriteNode {
-        shuriken.setScale(0.8)
+    func createThrowingStar() {
+        self.shuriken.setScale(0.8)
         var shurikenSize = CGSize(width: shuriken.size.width * 0.3, height: shuriken.size.height * 0.3)
-        shuriken.physicsBody = SKPhysicsBody(rectangleOfSize: shurikenSize)
-        shuriken.physicsBody?.dynamic = true
-        shuriken.physicsBody?.affectedByGravity = false
-        return shuriken
+        self.shuriken.physicsBody = SKPhysicsBody(rectangleOfSize: shurikenSize)
+        self.shuriken.physicsBody?.dynamic = true
+        self.shuriken.physicsBody?.affectedByGravity = false
+        self.shuriken.physicsBody?.collisionBitMask = 0
+        self.shuriken.physicsBody?.contactTestBitMask = enemy1Category | enemy2Category | enemy3Category | endOfScreenCategory
     }
-    
+
     func throwStar(positionx: CGFloat, positiony: CGFloat) {
         self.shuriken.position = CGPointMake(positionx / 1.5, positiony)
+        self.shuriken.runAction(SKAction.rotateByAngle(-150, duration: 5))
+        self.shuriken.physicsBody?.velocity = CGVectorMake(19, 0)
+        self.shuriken.physicsBody?.applyImpulse(CGVectorMake(19, 0))
+        self.isThrown = true
     }
-    
-    
-}
 
+}
 

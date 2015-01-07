@@ -6,14 +6,10 @@
 //  Copyright (c) 2014 Jake. All rights reserved.
 //
 
-
-//*******TODO: CHANGE ALL THE SKNODES THAT ARE JUST WORDS INTO SKLABELNODES NOW THAT THE FONT WORKS
-
 import Foundation
 import SpriteKit
 
 class PlayScene: SKScene, SKPhysicsContactDelegate {
-
     
     var score = 0
     let scoreText = SKLabelNode(fontNamed: "CF Samurai Bob")
@@ -24,11 +20,23 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
     var skyColor: SKColor!
     let jumpButton = SKSpriteNode(imageNamed: "JumpAttackButton")
     let attackButton = SKSpriteNode(imageNamed: "JumpAttackButton")
-    
-    let hero = Hero(health: 1)
+
+    let hero = Hero(health: 1, inventory: 3)
     let enemy1 = Enemy(health: 1, jumper: false)
     let enemy2 = Enemy(health: 1, jumper: false)
     let enemy3 = Enemy(health: 1, jumper: false)
+    let fullInventory = 3
+    let rechargeSpeed = NSUserDefaults.standardUserDefaults().integerForKey("rechargeSpeed")
+    var timerIsRunning = false
+    
+    let shuriken1 = ThrowingStar()
+    let shuriken2 = ThrowingStar()
+    let shuriken3 = ThrowingStar()
+    
+    //Throwing Stars in inventory
+    let shurikenImage1 = SKSpriteNode(imageNamed: "shuriken")
+    let shurikenImage2 = SKSpriteNode(imageNamed: "shuriken")
+    let shurikenImage3 = SKSpriteNode(imageNamed: "shuriken")
     
     let playButton = SKSpriteNode(imageNamed: "button")
     let pressedPlayButton = SKSpriteNode(imageNamed: "pressedButton")
@@ -51,21 +59,22 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
     let pausePicture = SKSpriteNode(imageNamed: "pausePic")
     let pauseButton = SKSpriteNode(imageNamed: "smallButton")
     
-    var shuriken: SKSpriteNode!
-    
     let leftEndOfScreen = SKSpriteNode(imageNamed: "endOfScreen")
     let rightEndOfScreen = SKSpriteNode(imageNamed: "endOfScreen")
-    
+   
     //Colliders
     let groundCategory: UInt32 = 1 << 0
     let ninjaCategory: UInt32 = 1 << 1
-    let weaponCategory: UInt32 = 1 << 2 //Ninja's weapons
+    //let weaponCategory: UInt32 = 1 << 2 //Not in use because weapon categories below
     let enemy1Category: UInt32 = 1 << 3
     let enemy2Category: UInt32 = 1 << 4
     let enemy3Category: UInt32 = 1 << 5
     let enemy4Category: UInt32 = 1 << 6
     let enemyWeaponCategory: UInt32 = 1 << 7 //Enemy weapons
     let endOfScreenCategory: UInt32 = 1 << 8 //End of screen
+    let weapon1Category: UInt32 = 1 << 9
+    let weapon2Category: UInt32 = 1 << 10
+    let weapon3Category: UInt32 = 1 << 11
     
     override func didMoveToView(view: SKView) {
         
@@ -113,15 +122,13 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         hero.ninja.physicsBody?.categoryBitMask = ninjaCategory
         hero.ninja.physicsBody?.contactTestBitMask = groundCategory
         hero.ninja.physicsBody?.collisionBitMask = groundCategory | enemy1Category | enemy2Category | enemy3Category | enemy4Category
+        self.addChild(hero.ninja)
         
-        
+        //Add enemies (set isDead to true later)
         //*****when finished, start enemies as isDead = true
         self.addChild(enemy1.createEnemy(frame.size.width, speed: 0.013, size: 0.6))
         self.addChild(enemy2.createEnemy(frame.size.width, speed: 0.011, size: 0.6))
         self.addChild(enemy3.createEnemy(frame.size.width, speed: 0.005, size: 0.4))
-        self.addChild(hero.ninja)
-        
-        //Add enemies (set isDead to true later)
         enemy1.ninja.physicsBody?.categoryBitMask = enemy1Category
         enemy2.ninja.physicsBody?.categoryBitMask = enemy2Category
         enemy3.ninja.physicsBody?.categoryBitMask = enemy3Category
@@ -184,6 +191,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(jumpButton)
         self.addChild(attackButton)
         
+        showInventory()
     }
     
     //Contact
@@ -193,41 +201,96 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         
         switch(contactMask) {
         case groundCategory | ninjaCategory:
-        if !hero.isDead {
-                hero.onGround = true
-                hero.playWalkAnimation()
-        } else {
-            endGame()
+            if !hero.isDead {
+                    hero.onGround = true
+                    hero.playWalkAnimation()
+            } else {
+                endGame()
             }
-        case enemy1Category | weaponCategory:
+        case enemy1Category | weapon1Category:
             enemy1.health = enemy1.health - 1
-            shuriken.removeFromParent()
+            shuriken1.shuriken.removeFromParent()
             if enemy1.health == 0 {
                 score++
                 self.scoreText.text = String(self.score)
                 enemy1.playDeadAnimation(frame.size.width)
             }
             
-        case enemy2Category | weaponCategory:
+        case enemy2Category | weapon1Category:
             enemy2.health = enemy2.health - 1
-            shuriken.removeFromParent()
+            shuriken1.shuriken.removeFromParent()
             if enemy2.health == 0 {
                 score++
                 self.scoreText.text = String(self.score)
                 enemy2.playDeadAnimation(frame.size.width)
             }
             
-        case enemy2Category | groundCategory:
-            if (enemy2.health != 0 && enemy2.jumper == true) {
-                enemy2.jump()
-            }
-        case enemy3Category | weaponCategory:
+        case enemy3Category | weapon1Category:
             enemy3.health = enemy3.health - 1
-            shuriken.removeFromParent()
+            shuriken1.shuriken.removeFromParent()
             if enemy3.health == 0 {
                 score++
                 self.scoreText.text = String(self.score)
                 enemy3.playDeadAnimation(frame.size.width)
+            }
+            
+        case enemy1Category | weapon2Category:
+            enemy1.health = enemy1.health - 1
+            shuriken2.shuriken.removeFromParent()
+            if enemy1.health == 0 {
+                score++
+                self.scoreText.text = String(self.score)
+                enemy1.playDeadAnimation(frame.size.width)
+            }
+            
+        case enemy2Category | weapon2Category:
+            enemy2.health = enemy2.health - 1
+            shuriken2.shuriken.removeFromParent()
+            if enemy2.health == 0 {
+                score++
+                self.scoreText.text = String(self.score)
+                enemy2.playDeadAnimation(frame.size.width)
+            }
+            
+        case enemy3Category | weapon2Category:
+            enemy3.health = enemy3.health - 1
+            shuriken2.shuriken.removeFromParent()
+            if enemy3.health == 0 {
+                score++
+                self.scoreText.text = String(self.score)
+                enemy3.playDeadAnimation(frame.size.width)
+            }
+            
+        case enemy1Category | weapon3Category:
+            enemy1.health = enemy1.health - 1
+            shuriken3.shuriken.removeFromParent()
+            if enemy1.health == 0 {
+                score++
+                self.scoreText.text = String(self.score)
+                enemy1.playDeadAnimation(frame.size.width)
+            }
+            
+        case enemy2Category | weapon3Category:
+            enemy2.health = enemy2.health - 1
+            shuriken3.shuriken.removeFromParent()
+            if enemy2.health == 0 {
+                score++
+                self.scoreText.text = String(self.score)
+                enemy2.playDeadAnimation(frame.size.width)
+            }
+            
+        case enemy3Category | weapon3Category:
+            enemy3.health = enemy3.health - 1
+            shuriken3.shuriken.removeFromParent()
+            if enemy3.health == 0 {
+                score++
+                self.scoreText.text = String(self.score)
+                enemy3.playDeadAnimation(frame.size.width)
+            }
+            
+        case enemy2Category | groundCategory:
+            if (enemy2.health != 0 && enemy2.jumper == true) {
+                enemy2.jump()
             }
 
         /*
@@ -252,9 +315,9 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             if !hero.isDead{
                 die()
             }
-            
-        case (weaponCategory | endOfScreenCategory):
-            shuriken.removeFromParent()
+          //FIX
+        //case (weaponCategory | endOfScreenCategory):
+            //self.shuriken.removeFromParent()
 
         //death of enemy
         case (enemy1Category | endOfScreenCategory):
@@ -276,7 +339,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
     
     //Run everytime frame is rendered
     override func update(currentTime: CFTimeInterval) {
-        
+
         //RESPAWN ENEMIES -- TODO: make enemies with the ability to jump (and throw stars)
         if enemy1.isDead {
             enemy1.isDead = false
@@ -351,14 +414,32 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         for touch: AnyObject in touches {
             let location = touch.locationInNode(self)
             
-            if (CGRectContainsPoint(attackButton.frame, touch.locationInNode(self)) & (!hero.isDead)) {
-                shuriken = hero.throwStar()
-                shuriken.physicsBody?.categoryBitMask = weaponCategory
-                shuriken.physicsBody?.contactTestBitMask = enemy1Category | enemy2Category | enemy3Category | endOfScreenCategory
-                shuriken.physicsBody?.collisionBitMask = 0
-                self.addChild(shuriken)
-                shuriken.physicsBody?.velocity = CGVectorMake(20, 0)
-                shuriken.physicsBody?.applyImpulse(CGVectorMake(20, 0))
+            if (CGRectContainsPoint(attackButton.frame, touch.locationInNode(self)) & (!hero.isDead) & (hero.inventory != 0)) {
+                hero.playThrowAnimation()
+                hero.inventory -= 1
+                updateInventory(hero.inventory)
+                if (!shuriken1.isThrown) {
+                    shuriken1.shuriken.removeFromParent()
+                    shuriken1.createThrowingStar()
+                    shuriken1.shuriken.physicsBody?.categoryBitMask = weapon1Category
+                    self.addChild(shuriken1.shuriken)
+                    shuriken1.throwStar(hero.ninja.position.x, positiony: hero.ninja.position.y)
+                } else if (!shuriken2.isThrown) {
+                    shuriken2.shuriken.removeFromParent()
+                    shuriken2.createThrowingStar()
+                    shuriken2.shuriken.physicsBody?.categoryBitMask = weapon2Category
+                    self.addChild(shuriken2.shuriken)
+                    shuriken2.throwStar(hero.ninja.position.x, positiony: hero.ninja.position.y)
+                } else if (!shuriken3.isThrown) {
+                    shuriken3.shuriken.removeFromParent()
+                    shuriken3.createThrowingStar()
+                    shuriken3.shuriken.physicsBody?.categoryBitMask = weapon3Category
+                    self.addChild(shuriken3.shuriken)
+                    shuriken3.throwStar(hero.ninja.position.x, positiony: hero.ninja.position.y)
+                }
+                if (!timerIsRunning) {
+                    rechargeInventory()
+                }
             }
             
             if (CGRectContainsPoint(jumpButton.frame, touch.locationInNode(self)) & (hero.onGround) & (!hero.isDead))  {
@@ -509,6 +590,64 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         pauseText.position = CGPointMake(frame.size.width/2, frame.size.height/2 + pauseMenuButton.size.height * 2)
         self.addChild(pauseText)
     }
+ 
+    func showInventory() {
+        shurikenImage1.setScale(0.6)
+        shurikenImage1.position = CGPointMake(CGRectGetMinX(self.frame) + (shurikenImage1.size.width), CGRectGetMaxY(self.frame) - (1.07 * pauseButton.size.height))
+        shurikenImage2.setScale(0.6)
+        shurikenImage2.position = CGPointMake(CGRectGetMinX(self.frame) + (shurikenImage1.size.width * 1.5), CGRectGetMaxY(self.frame) - (1.07 * pauseButton.size.height))
+        shurikenImage3.setScale(0.6)
+        shurikenImage3.position = CGPointMake(CGRectGetMinX(self.frame) + (shurikenImage1.size.width * 2), CGRectGetMaxY(self.frame) - (1.07 * pauseButton.size.height))
+        shurikenImage1.hidden = true
+        shurikenImage2.hidden = true
+        shurikenImage3.hidden = true
+        
+        self.addChild(shurikenImage1)
+        self.addChild(shurikenImage2)
+        self.addChild(shurikenImage3)
+        updateInventory(hero.inventory)
+        
+    }
+    
+    func updateInventory(inventory: Int) {
+        if (inventory > 0) {
+            shurikenImage1.hidden = false
+        } else {
+            shurikenImage1.hidden = true
+        }
+        if (inventory > 1) {
+            shurikenImage2.hidden = false
+        } else {
+            shurikenImage2.hidden = true
+        }
+        if (inventory > 2) {
+            shurikenImage3.hidden = false
+        } else {
+            shurikenImage3.hidden = true
+        }
 
+    }
+    
+    func rechargeInventory() {
+        self.timerIsRunning = true
+        let recharge = SKAction.sequence([SKAction.waitForDuration(NSTimeInterval(rechargeSpeed)), SKAction.runBlock({
+            if (self.shuriken1.isThrown == true) {
+                self.shuriken1.isThrown = false
+            } else if (self.shuriken2.isThrown == true) {
+                self.shuriken2.isThrown = false
+            } else if (self.shuriken3.isThrown == true) {
+                self.shuriken3.isThrown = false
+            }
+            self.hero.inventory += 1
+            self.updateInventory(self.hero.inventory)
+            if (self.hero.inventory < self.fullInventory) {
+                self.rechargeInventory()
+            } else {
+                self.timerIsRunning = false
+            }
+        })])
+        self.runAction(recharge)
+    }
+    
 }
 

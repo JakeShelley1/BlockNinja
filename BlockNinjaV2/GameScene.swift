@@ -73,6 +73,22 @@ class GameScene: SKScene {
             
         }
         
+        //Set initial inventory value
+        NSUserDefaults.standardUserDefaults().integerForKey("inventory")
+        if (NSUserDefaults.standardUserDefaults().integerForKey("inventory") == 0) {
+            NSUserDefaults.standardUserDefaults().setInteger(1, forKey: "inventory")
+            NSUserDefaults.standardUserDefaults().synchronize()
+        }
+        NSUserDefaults.standardUserDefaults().integerForKey("inventory")
+        
+        //Set initial throwing star recharge speed
+        NSUserDefaults.standardUserDefaults().integerForKey("rechargeSpeed")
+        if (NSUserDefaults.standardUserDefaults().integerForKey("rechargeSpeed") == 0) {
+            NSUserDefaults.standardUserDefaults().setInteger(2, forKey: "rechargeSpeed")
+            NSUserDefaults.standardUserDefaults().synchronize()
+        }
+        NSUserDefaults.standardUserDefaults().integerForKey("inventory")
+        
         //Display highscore
         if (highScore != 0) {
             highScoreText.text = ("HIGH SCORE: " + String(highScore))
@@ -105,5 +121,6 @@ class GameScene: SKScene {
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
     }
+    
 }
 
