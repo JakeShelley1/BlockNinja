@@ -35,7 +35,7 @@ class Hero {
     
     
     //Add physics and position to hero
-    func createHero(frameWidth: CGFloat) {
+    func createHero(frameWidth: CGFloat) -> SKSpriteNode {
         
         ninja.position = CGPoint(x: frameWidth / 6, y: ninja.size.height * 2.5)
         let adjustedNinjaSize = CGSize(width: ninja.size.width * 0.6, height: ninja.size.height * 0.6)
@@ -44,7 +44,10 @@ class Hero {
         ninja.setScale(0.6)
         ninja.physicsBody?.restitution = 0.0
         ninja.physicsBody?.allowsRotation = false
-    
+        ninja.physicsBody?.categoryBitMask = ninjaCategory
+        ninja.physicsBody?.contactTestBitMask = groundCategory | enemy1Category | enemy2Category | enemy3Category | enemy4Category
+        ninja.physicsBody?.collisionBitMask = groundCategory
+        return ninja
     }
 
     func playWalkAnimation() {
@@ -107,6 +110,7 @@ class Hero {
 class Enemy {
     var enemyMoveAndRemove: SKAction!
     var isDead = false
+    var dying = false
     var health: Int
     var jumper: Bool
     var fakeHealth: Int
@@ -120,7 +124,7 @@ class Enemy {
     
     //Add physics and position to hero
     func createEnemy(frameWidth: CGFloat, speed: CGFloat, size: CGFloat)-> SKSpriteNode{
-        //isDead = false
+        dying = false
         var shuriken = SKSpriteNode(imageNamed: "shuriken")
         ninja.position = CGPoint(x: frameWidth + ninja.size.width, y: groundTexture.size.height)
         let adjustedNinjaSize = CGSize(width: ninja.size.width * (size / 1.5), height: ninja.size.height * size)

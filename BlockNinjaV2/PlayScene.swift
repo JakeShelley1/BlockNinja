@@ -86,46 +86,19 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         self.physicsWorld.contactDelegate = self
         self.physicsWorld.gravity = CGVectorMake(0.0, -12.8)
         
-        //Score
-        self.scoreText.text = "0"
-        self.scoreText.fontSize = 50
-        self.scoreText.position = CGPoint(x: self.frame.width/1.05, y: self.frame.height/1.1)
-        self.scoreText.fontColor = UIColor.blackColor()
-        self.addChild(scoreText)
+        //Set up the scene
+        createScoreBoard()
+        createEndOfScreen()
+        createPauseButton()
+        createAndMoveGround()
+        createJumpAndAttackButtons()
+        showInventory()
+        createAndMoveClouds()
         
-        //End of Screen stuff
-        let endScreenSize = CGSize(width: leftEndOfScreen.size.width, height: leftEndOfScreen.size.height)
-        leftEndOfScreen.physicsBody = SKPhysicsBody(rectangleOfSize: endScreenSize)
-        leftEndOfScreen.position = CGPointMake(-enemy1.ninja.size.width, frame.size.height/2)
-        leftEndOfScreen.hidden = false
-        leftEndOfScreen.physicsBody?.categoryBitMask = endOfScreenCategory
-        leftEndOfScreen.physicsBody?.contactTestBitMask = weaponCategory | enemy1Category | enemy2Category | enemy3Category | enemy4Category
-        leftEndOfScreen.physicsBody?.dynamic = false
-        
-        rightEndOfScreen.physicsBody = SKPhysicsBody(rectangleOfSize: endScreenSize)
-        rightEndOfScreen.position = CGPointMake(frame.size.width + enemy1.ninja.size.width, frame.size.height/2)
-        rightEndOfScreen.physicsBody?.categoryBitMask = endOfScreenCategory
-        rightEndOfScreen.physicsBody?.contactTestBitMask = weaponCategory
-        rightEndOfScreen.physicsBody?.dynamic = false
-        
-        self.addChild(leftEndOfScreen)
-        self.addChild(rightEndOfScreen)
-        
-        //Pause Button
-        pauseButton.setScale(1)
-        pauseButton.position = CGPointMake(CGRectGetMinX(self.frame) + (1.05 * pauseButton.size.width), CGRectGetMaxY(self.frame) - (1.05 * pauseButton.size.height))
-        pauseButton.addChild(pausePicture)
-        self.addChild(pauseButton)
-        
-        //Create player's ninja
-        hero.createHero(self.frame.width)
-        hero.ninja.physicsBody?.categoryBitMask = ninjaCategory
-        hero.ninja.physicsBody?.contactTestBitMask = groundCategory
-        hero.ninja.physicsBody?.collisionBitMask = groundCategory | enemy1Category | enemy2Category | enemy3Category | enemy4Category
-        self.addChild(hero.ninja)
-        
-        //Add enemies (set isDead to true later)
-        //*****when finished, start enemies as isDead = true
+        //Add ninjas
+        self.addChild(hero.createHero(self.frame.width))
+
+        //*****when finished, start enemies as isDead = true (delete everything except comments)
         self.addChild(enemy1.createEnemy(frame.size.width, speed: 0.013, size: 0.6))
         self.addChild(enemy2.createEnemy(frame.size.width, speed: 0.011, size: 0.6))
         self.addChild(enemy3.createEnemy(frame.size.width, speed: 0.005, size: 0.4))
@@ -135,63 +108,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         //enemy1.isDead = true
         //enemy2.isDead = true
         //enemy3.isDead = true
-        
-        //Ground
-        let groundTexture = SKTexture(imageNamed: "Ground")
-        groundTexture.filteringMode = .Nearest
-        
-        let moveGroundSprite = SKAction.moveByX(-groundTexture.size().width * 2.0, y: 0, duration: NSTimeInterval(0.006 * groundTexture.size().width * 2.0))
-        let resetGroundSprite = SKAction.moveByX(groundTexture.size().width * 2.0, y: 0, duration: 0.0)
-        let moveGroundSpritesForever = SKAction.repeatActionForever(SKAction.sequence([moveGroundSprite,resetGroundSprite]))
-        
-        //Move Ground
-        for var i:CGFloat = 0; i < 2.0 + self.frame.size.width / ( groundTexture.size().width * 0.5 ); ++i {
-            let sprite = SKSpriteNode(texture: groundTexture)
-            sprite.setScale(1.0)
-            sprite.position = CGPointMake(i * sprite.size.width, sprite.size.height / 4)
-            sprite.runAction(moveGroundSpritesForever, withKey: "moveGroundSprite")
-            sprite.physicsBody?.dynamic = false
-            moving.addChild(sprite)
-        }
-    
-        //Cloud spawning
-        let spawnACloud = SKAction.runBlock({self.spawnCloud()})
-        let spawnThenDelayCloud = SKAction.sequence([spawnACloud, SKAction.waitForDuration(6.0)])
-        let spawnThenDelayCloudForever = SKAction.repeatActionForever(spawnThenDelayCloud)
-        self.runAction(spawnThenDelayCloudForever)
-        
-        let clouddistanceToMove = CGFloat(self.frame.width + 4.0 * cloudTexture.size().width)
-        let cloudmovement = SKAction.moveByX(-clouddistanceToMove, y: 0.0, duration: NSTimeInterval(0.025 * clouddistanceToMove))
-        let removeCloud = SKAction.removeFromParent()
-        cloudMoveAndRemove = SKAction.sequence([cloudmovement, removeCloud])
-        
-        
-        //Actual Ground
-        var ground = SKNode()
-        ground.position = CGPointMake(0, groundTexture.size().height / 1.47)
-        ground.physicsBody = SKPhysicsBody(rectangleOfSize: CGSizeMake(self.frame.size.width * 4, groundTexture.size().height / 4.0))
-        ground.setScale(1.0)
-        ground.physicsBody?.dynamic = false
-        ground.physicsBody?.categoryBitMask = groundCategory
-        ground.physicsBody?.contactTestBitMask = ninjaCategory | enemy1Category | enemy2Category | enemy3Category | enemy4Category
-        ground.physicsBody?.collisionBitMask = ninjaCategory | enemy1Category | enemy2Category | enemy3Category | enemy4Category
-        ground.physicsBody?.restitution = 0.0
-        self.addChild(ground)
-        
-        //Jump and Attack buttons
-        attackButton.position = CGPointMake(CGRectGetMidX(self.frame) * 1.5, CGRectGetMidY(self.frame))
-        jumpButton.position = CGPointMake(CGRectGetMidX(self.frame) / 2, CGRectGetMidY(self.frame))
-        jumpButton.physicsBody?.dynamic = false
-        attackButton.physicsBody?.dynamic = false
-        attackButton.hidden = true
-        jumpButton.hidden = true
-        jumpButton.setScale(1.1)
-        attackButton.setScale(1.1)
-        
-        self.addChild(jumpButton)
-        self.addChild(attackButton)
-        
-        showInventory()
+
     }
     
     //Contact
@@ -211,6 +128,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             enemy1.health = enemy1.health - 1
             shuriken1.shuriken.removeFromParent()
             if enemy1.health == 0 {
+                enemy1.dying = true
                 score++
                 self.scoreText.text = String(self.score)
                 enemy1.playDeadAnimation(frame.size.width)
@@ -220,6 +138,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             enemy2.health = enemy2.health - 1
             shuriken1.shuriken.removeFromParent()
             if enemy2.health == 0 {
+                enemy2.dying = true
                 score++
                 self.scoreText.text = String(self.score)
                 enemy2.playDeadAnimation(frame.size.width)
@@ -229,6 +148,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             enemy3.health = enemy3.health - 1
             shuriken1.shuriken.removeFromParent()
             if enemy3.health == 0 {
+                enemy3.dying = true
                 score++
                 self.scoreText.text = String(self.score)
                 enemy3.playDeadAnimation(frame.size.width)
@@ -238,6 +158,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             enemy1.health = enemy1.health - 1
             shuriken2.shuriken.removeFromParent()
             if enemy1.health == 0 {
+                enemy1.dying = true
                 score++
                 self.scoreText.text = String(self.score)
                 enemy1.playDeadAnimation(frame.size.width)
@@ -247,6 +168,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             enemy2.health = enemy2.health - 1
             shuriken2.shuriken.removeFromParent()
             if enemy2.health == 0 {
+                enemy2.dying = true
                 score++
                 self.scoreText.text = String(self.score)
                 enemy2.playDeadAnimation(frame.size.width)
@@ -256,6 +178,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             enemy3.health = enemy3.health - 1
             shuriken2.shuriken.removeFromParent()
             if enemy3.health == 0 {
+                enemy3.dying = true
                 score++
                 self.scoreText.text = String(self.score)
                 enemy3.playDeadAnimation(frame.size.width)
@@ -265,6 +188,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             enemy1.health = enemy1.health - 1
             shuriken3.shuriken.removeFromParent()
             if enemy1.health == 0 {
+                enemy1.dying = true
                 score++
                 self.scoreText.text = String(self.score)
                 enemy1.playDeadAnimation(frame.size.width)
@@ -274,6 +198,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             enemy2.health = enemy2.health - 1
             shuriken3.shuriken.removeFromParent()
             if enemy2.health == 0 {
+                enemy2.dying = true
                 score++
                 self.scoreText.text = String(self.score)
                 enemy2.playDeadAnimation(frame.size.width)
@@ -283,6 +208,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             enemy3.health = enemy3.health - 1
             shuriken3.shuriken.removeFromParent()
             if enemy3.health == 0 {
+                enemy3.dying = true
                 score++
                 self.scoreText.text = String(self.score)
                 enemy3.playDeadAnimation(frame.size.width)
@@ -300,24 +226,23 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         */
             
         case (enemy1Category | ninjaCategory):
-            if !hero.isDead{
+            if (!hero.isDead & !enemy1.dying) {
                 die()
             }
         case (enemy2Category | ninjaCategory):
-            if !hero.isDead{
+            if (!hero.isDead & !enemy2.dying){
                 die()
             }
         case (enemy3Category | ninjaCategory):
-            if !hero.isDead{
+            if (!hero.isDead & !enemy3.dying) {
                 die()
             }
+            
+        //no fourth enemy...yet
         case (enemy4Category | ninjaCategory):
             if !hero.isDead{
                 die()
             }
-          //FIX
-        //case (weaponCategory | endOfScreenCategory):
-            //self.shuriken.removeFromParent()
 
         //death of enemy
         case (enemy1Category | endOfScreenCategory):
@@ -649,5 +574,102 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         self.runAction(recharge)
     }
     
+    func createEndOfScreen() {
+        //End of Screen stuff
+        let endScreenSize = CGSize(width: leftEndOfScreen.size.width, height: leftEndOfScreen.size.height)
+        leftEndOfScreen.physicsBody = SKPhysicsBody(rectangleOfSize: endScreenSize)
+        leftEndOfScreen.position = CGPointMake(-enemy1.ninja.size.width, frame.size.height/2)
+        leftEndOfScreen.hidden = false
+        leftEndOfScreen.physicsBody?.categoryBitMask = endOfScreenCategory
+        leftEndOfScreen.physicsBody?.contactTestBitMask = weaponCategory | enemy1Category | enemy2Category | enemy3Category | enemy4Category
+        leftEndOfScreen.physicsBody?.dynamic = false
+        
+        rightEndOfScreen.physicsBody = SKPhysicsBody(rectangleOfSize: endScreenSize)
+        rightEndOfScreen.position = CGPointMake(frame.size.width + enemy1.ninja.size.width, frame.size.height/2)
+        rightEndOfScreen.physicsBody?.categoryBitMask = endOfScreenCategory
+        rightEndOfScreen.physicsBody?.contactTestBitMask = weaponCategory
+        rightEndOfScreen.physicsBody?.dynamic = false
+        
+        self.addChild(leftEndOfScreen)
+        self.addChild(rightEndOfScreen)
+        
+    }
+    
+    func createScoreBoard() {
+        //Score
+        self.scoreText.text = "0"
+        self.scoreText.fontSize = 50
+        self.scoreText.position = CGPoint(x: self.frame.width/1.05, y: self.frame.height/1.1)
+        self.scoreText.fontColor = UIColor.blackColor()
+        self.addChild(scoreText)
+        
+    }
+    
+    func createPauseButton() {
+        //Pause Button
+        pauseButton.setScale(1)
+        pauseButton.position = CGPointMake(CGRectGetMinX(self.frame) + (1.05 * pauseButton.size.width), CGRectGetMaxY(self.frame) - (1.05 * pauseButton.size.height))
+        pauseButton.addChild(pausePicture)
+        self.addChild(pauseButton)
+    }
+    
+    func createAndMoveGround() {
+        //Ground
+        let groundTexture = SKTexture(imageNamed: "Ground")
+        groundTexture.filteringMode = .Nearest
+        
+        let moveGroundSprite = SKAction.moveByX(-groundTexture.size().width * 2.0, y: 0, duration: NSTimeInterval(0.006 * groundTexture.size().width * 2.0))
+        let resetGroundSprite = SKAction.moveByX(groundTexture.size().width * 2.0, y: 0, duration: 0.0)
+        let moveGroundSpritesForever = SKAction.repeatActionForever(SKAction.sequence([moveGroundSprite,resetGroundSprite]))
+        
+        //Move Ground
+        for var i:CGFloat = 0; i < 2.0 + self.frame.size.width / ( groundTexture.size().width * 0.5 ); ++i {
+            let sprite = SKSpriteNode(texture: groundTexture)
+            sprite.setScale(1.0)
+            sprite.position = CGPointMake(i * sprite.size.width, sprite.size.height / 4)
+            sprite.runAction(moveGroundSpritesForever, withKey: "moveGroundSprite")
+            sprite.physicsBody?.dynamic = false
+            moving.addChild(sprite)
+        }
+        
+        //Actual Ground
+        var ground = SKNode()
+        ground.position = CGPointMake(0, groundTexture.size().height / 1.47)
+        ground.physicsBody = SKPhysicsBody(rectangleOfSize: CGSizeMake(self.frame.size.width * 4, groundTexture.size().height / 4.0))
+        ground.setScale(1.0)
+        ground.physicsBody?.dynamic = false
+        ground.physicsBody?.categoryBitMask = groundCategory
+        ground.physicsBody?.contactTestBitMask = ninjaCategory | enemy1Category | enemy2Category | enemy3Category | enemy4Category
+        ground.physicsBody?.collisionBitMask = ninjaCategory | enemy1Category | enemy2Category | enemy3Category | enemy4Category
+        ground.physicsBody?.restitution = 0.0
+        self.addChild(ground)
+    }
+    
+    func createJumpAndAttackButtons() {
+        //Jump and Attack buttons
+        attackButton.position = CGPointMake(CGRectGetMidX(self.frame) * 1.5, CGRectGetMidY(self.frame))
+        jumpButton.position = CGPointMake(CGRectGetMidX(self.frame) / 2, CGRectGetMidY(self.frame))
+        jumpButton.physicsBody?.dynamic = false
+        attackButton.physicsBody?.dynamic = false
+        attackButton.hidden = true
+        jumpButton.hidden = true
+        jumpButton.setScale(1.1)
+        attackButton.setScale(1.1)
+        
+        self.addChild(jumpButton)
+        self.addChild(attackButton)
+    }
+    
+    func createAndMoveClouds() {
+        //Cloud spawning
+        let spawnACloud = SKAction.runBlock({self.spawnCloud()})
+        let spawnThenDelayCloud = SKAction.sequence([spawnACloud, SKAction.waitForDuration(6.0)])
+        let spawnThenDelayCloudForever = SKAction.repeatActionForever(spawnThenDelayCloud)
+        self.runAction(spawnThenDelayCloudForever)
+        let clouddistanceToMove = CGFloat(self.frame.width + 4.0 * cloudTexture.size().width)
+        let cloudmovement = SKAction.moveByX(-clouddistanceToMove, y: 0.0, duration: NSTimeInterval(0.025 * clouddistanceToMove))
+        let removeCloud = SKAction.removeFromParent()
+        cloudMoveAndRemove = SKAction.sequence([cloudmovement, removeCloud])
+    }
 }
 
