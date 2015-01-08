@@ -11,6 +11,7 @@ import SpriteKit
 
 class GameScene: SKScene {
     
+    var coins = NSUserDefaults.standardUserDefaults().integerForKey("coins")
     let startButton = SKSpriteNode(imageNamed: "otherButton")
     let shopButton = SKSpriteNode(imageNamed: "otherButton")
     let title = SKLabelNode(fontNamed: "CF Samurai Bob")
@@ -18,8 +19,9 @@ class GameScene: SKScene {
     var highScoreText = SKLabelNode(fontNamed: "CF Samurai Bob")
     let startText = SKLabelNode(fontNamed: "CF Samurai Bob")
     let shopText = SKLabelNode(fontNamed: "CF Samurai Bob")
-    
+    var coinImage = SKSpriteNode(imageNamed: "coin")
     var highScore = NSUserDefaults.standardUserDefaults().integerForKey("highscore")
+    var coinText = SKLabelNode(fontNamed: "CF Samurai Bob")
     
     override func didMoveToView(view: SKView) {
         moving = SKNode()
@@ -45,6 +47,15 @@ class GameScene: SKScene {
         shopText.position = CGPointMake(0, -self.shopButton.size.height / 8)
         self.startButton.addChild(startText)
         self.shopButton.addChild(shopText)
+        
+        coinText.fontSize = 50
+        coinText.fontColor = UIColor.blackColor()
+        coinText.text = String(coins)
+        coinText.position = CGPointMake(CGRectGetMinX(frame) + (coinImage.size.width * 1.34), CGRectGetMaxY(frame) - (coinImage.size.height * 2.5))
+        self.addChild(coinText)
+        coinImage.setScale(0.5)
+        coinImage.position = CGPointMake(CGRectGetMinX(frame) + (coinImage.size.width * 0.7), (CGRectGetMaxY(frame) - (coinImage.size.height * 4.5)))
+        self.addChild(coinImage)
         
         //Text
         title.text = "BLOCK NINJA"
@@ -107,6 +118,16 @@ class GameScene: SKScene {
             let location = touch.locationInNode(self)
             if (self.nodeAtPoint(location) == self.startButton) || (self.nodeAtPoint(location) == self.startText) {
                 var scene = PlayScene(size: self.size)
+                let skView = self.view as SKView!
+                skView.ignoresSiblingOrder = true
+                scene.scaleMode = .ResizeFill
+                scene.size = skView.bounds.size
+                self.removeAllChildren()
+                skView.presentScene(scene)
+                
+            }
+            if (self.nodeAtPoint(location) == self.shopButton) || (self.nodeAtPoint(location) == self.shopText) {
+                var scene = ShopScene(size: self.size)
                 let skView = self.view as SKView!
                 skView.ignoresSiblingOrder = true
                 scene.scaleMode = .ResizeFill

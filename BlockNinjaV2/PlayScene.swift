@@ -11,6 +11,8 @@ import SpriteKit
 
 class PlayScene: SKScene, SKPhysicsContactDelegate {
     
+    var totalCoins = NSUserDefaults.standardUserDefaults().integerForKey("coins")
+    var timer = 0
     var score = 0
     let scoreText = SKLabelNode(fontNamed: "CF Samurai Bob")
     var cloudTexture = SKTexture(imageNamed: "Cloud")
@@ -21,11 +23,12 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
     let jumpButton = SKSpriteNode(imageNamed: "JumpAttackButton")
     let attackButton = SKSpriteNode(imageNamed: "JumpAttackButton")
 
-    let hero = Hero(health: 1, inventory: 3)
-    let enemy1 = Enemy(health: 1, jumper: false)
-    let enemy2 = Enemy(health: 1, jumper: false)
-    let enemy3 = Enemy(health: 1, jumper: false)
-    let fullInventory = 3
+    let hero = Hero(health: 1, inventory: NSUserDefaults.standardUserDefaults().integerForKey("inventory"))
+    let enemy1 = Enemy(health: 1)
+    let enemy2 = Enemy(health: 1)
+    let enemy3 = Enemy(health: 1)
+    let enemy4 = Enemy(health: 1)
+    let fullInventory = NSUserDefaults.standardUserDefaults().integerForKey("inventory")
     let rechargeSpeed = NSUserDefaults.standardUserDefaults().integerForKey("rechargeSpeed")
     var timerIsRunning = false
     
@@ -55,7 +58,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
     let pauseMenuButton = SKSpriteNode(imageNamed: "button")
     let restartButton = SKSpriteNode(imageNamed: "button")
     
-    
+    let coinsText = SKLabelNode(fontNamed: "CF Samurai Bob")
     let pausePicture = SKSpriteNode(imageNamed: "pausePic")
     let pauseButton = SKSpriteNode(imageNamed: "smallButton")
     
@@ -89,7 +92,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         //Set up the scene
         createScoreBoard()
         createEndOfScreen()
-        createPauseButton()
+        //createPauseButton()
         createAndMoveGround()
         createJumpAndAttackButtons()
         showInventory()
@@ -97,18 +100,9 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         
         //Add ninjas
         self.addChild(hero.createHero(self.frame.width))
+        hero.isDead = false
 
-        //*****when finished, start enemies as isDead = true (delete everything except comments)
-        self.addChild(enemy1.createEnemy(frame.size.width, speed: 0.013, size: 0.6))
-        self.addChild(enemy2.createEnemy(frame.size.width, speed: 0.011, size: 0.6))
-        self.addChild(enemy3.createEnemy(frame.size.width, speed: 0.005, size: 0.4))
-        enemy1.ninja.physicsBody?.categoryBitMask = enemy1Category
-        enemy2.ninja.physicsBody?.categoryBitMask = enemy2Category
-        enemy3.ninja.physicsBody?.categoryBitMask = enemy3Category
-        //enemy1.isDead = true
-        //enemy2.isDead = true
-        //enemy3.isDead = true
-
+        enemy1.isDead = true
     }
     
     //Contact
@@ -126,7 +120,9 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             }
         case enemy1Category | weapon1Category:
             enemy1.health = enemy1.health - 1
-            shuriken1.shuriken.removeFromParent()
+            if (!enemy1.dying) {
+                shuriken1.shuriken.removeFromParent()
+            }
             if enemy1.health == 0 {
                 enemy1.dying = true
                 score++
@@ -136,7 +132,9 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             
         case enemy2Category | weapon1Category:
             enemy2.health = enemy2.health - 1
-            shuriken1.shuriken.removeFromParent()
+            if (!enemy2.dying) {
+                shuriken1.shuriken.removeFromParent()
+            }
             if enemy2.health == 0 {
                 enemy2.dying = true
                 score++
@@ -146,7 +144,9 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             
         case enemy3Category | weapon1Category:
             enemy3.health = enemy3.health - 1
-            shuriken1.shuriken.removeFromParent()
+            if (!enemy3.dying) {
+                shuriken1.shuriken.removeFromParent()
+            }
             if enemy3.health == 0 {
                 enemy3.dying = true
                 score++
@@ -156,7 +156,9 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             
         case enemy1Category | weapon2Category:
             enemy1.health = enemy1.health - 1
-            shuriken2.shuriken.removeFromParent()
+            if (!enemy1.dying) {
+                shuriken2.shuriken.removeFromParent()
+            }
             if enemy1.health == 0 {
                 enemy1.dying = true
                 score++
@@ -166,7 +168,9 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             
         case enemy2Category | weapon2Category:
             enemy2.health = enemy2.health - 1
-            shuriken2.shuriken.removeFromParent()
+            if (!enemy2.dying) {
+                shuriken2.shuriken.removeFromParent()
+            }
             if enemy2.health == 0 {
                 enemy2.dying = true
                 score++
@@ -176,7 +180,9 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             
         case enemy3Category | weapon2Category:
             enemy3.health = enemy3.health - 1
-            shuriken2.shuriken.removeFromParent()
+            if (!enemy3.dying) {
+                shuriken2.shuriken.removeFromParent()
+            }
             if enemy3.health == 0 {
                 enemy3.dying = true
                 score++
@@ -186,7 +192,9 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             
         case enemy1Category | weapon3Category:
             enemy1.health = enemy1.health - 1
-            shuriken3.shuriken.removeFromParent()
+            if (!enemy1.dying) {
+                shuriken3.shuriken.removeFromParent()
+            }
             if enemy1.health == 0 {
                 enemy1.dying = true
                 score++
@@ -196,7 +204,9 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             
         case enemy2Category | weapon3Category:
             enemy2.health = enemy2.health - 1
-            shuriken3.shuriken.removeFromParent()
+            if (!enemy2.dying) {
+                shuriken3.shuriken.removeFromParent()
+            }
             if enemy2.health == 0 {
                 enemy2.dying = true
                 score++
@@ -206,17 +216,14 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             
         case enemy3Category | weapon3Category:
             enemy3.health = enemy3.health - 1
-            shuriken3.shuriken.removeFromParent()
+            if (!enemy3.dying) {
+                shuriken3.shuriken.removeFromParent()
+            }
             if enemy3.health == 0 {
                 enemy3.dying = true
                 score++
                 self.scoreText.text = String(self.score)
                 enemy3.playDeadAnimation(frame.size.width)
-            }
-            
-        case enemy2Category | groundCategory:
-            if (enemy2.health != 0 && enemy2.jumper == true) {
-                enemy2.jump()
             }
 
         /*
@@ -226,15 +233,15 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         */
             
         case (enemy1Category | ninjaCategory):
-            if (!hero.isDead & !enemy1.dying) {
+            if (!hero.isDead && !enemy1.dying) {
                 die()
             }
         case (enemy2Category | ninjaCategory):
-            if (!hero.isDead & !enemy2.dying){
+            if (!hero.isDead && !enemy2.dying){
                 die()
             }
         case (enemy3Category | ninjaCategory):
-            if (!hero.isDead & !enemy3.dying) {
+            if (!hero.isDead && !enemy3.dying) {
                 die()
             }
             
@@ -253,8 +260,26 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             
         case (enemy2Category | endOfScreenCategory):
             enemy2.isDead = true
-            
-            
+        
+        //enemy jumping
+        case enemy2Category | groundCategory:
+            if (enemy2.health != 0 && enemy2.jumper == true) {
+                enemy2.jump()
+            }
+        case enemy2Category | groundCategory:
+            if (enemy2.health != 0 && enemy2.jumper == true) {
+                enemy2.jump()
+            }
+        case enemy3Category | groundCategory:
+            if (enemy3.health != 0 && enemy3.jumper == true) {
+                enemy3.jump()
+            }
+        /*
+        case enemy2Category | groundCategory:
+            if (enemy2.health != 0 && enemy2.jumper == true) {
+                enemy2.jump()
+            }
+          */
         default:
             return
         }
@@ -269,21 +294,8 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         if enemy1.isDead {
             enemy1.isDead = false
             let respawnSequence = SKAction.sequence([SKAction.runBlock({self.enemy1.ninja.removeFromParent()}), SKAction.runBlock({
-                self.enemy1.isDead = false
-                var delay = CGFloat((arc4random() % 10) / 2)
-                var thisSpeed = CGFloat(Float(arc4random()) / Float(UINT32_MAX)) * 0.01
-                var thisSize = CGFloat(Float(arc4random()) / Float(UINT32_MAX))
-                
-                //if size or speed are too low or fast
-                if thisSize < 0.35 || thisSize > 0.7 {
-                    thisSize = 0.55
-                }
-                if thisSpeed < 0.0035 {
-                    thisSpeed = 0.005
-                }
-                
                 self.enemy1.health = 1
-                self.addChild(self.enemy1.createEnemy(self.frame.size.width, speed: thisSpeed, size: thisSize))
+                self.addChild(self.enemy1.createEnemy(self.frame.size.width))
                 self.enemy1.ninja.physicsBody?.categoryBitMask = self.enemy1Category
             })])
             self.runAction(respawnSequence)
@@ -291,20 +303,8 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         if enemy2.isDead {
             enemy2.isDead = false
             let respawnSequence = SKAction.sequence([SKAction.runBlock({self.enemy2.ninja.removeFromParent()}), SKAction.runBlock({
-                self.enemy2.isDead = false
-                var delay = CGFloat((arc4random() % 10) / 2)
-                var thisSpeed = CGFloat(Float(arc4random()) / Float(UINT32_MAX)) * 0.01
-                var thisSize = CGFloat(Float(arc4random()) / Float(UINT32_MAX))
-                //if size or speed are too low or fast
-                if thisSize < 0.35 || thisSize > 0.7 {
-                    thisSize = 0.55
-                }
-                if thisSpeed < 0.0035 {
-                    thisSpeed = 0.005
-                }
-                
                 self.enemy2.health = 1
-                self.addChild(self.enemy2.createEnemy(self.frame.size.width, speed: thisSpeed, size: thisSize))
+                self.addChild(self.enemy2.createEnemy(self.frame.size.width))
                 self.enemy2.ninja.physicsBody?.categoryBitMask = self.enemy2Category
             })])
             self.runAction(respawnSequence)
@@ -313,24 +313,53 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         if enemy3.isDead {
             enemy3.isDead = false
             let respawnSequence = SKAction.sequence([SKAction.runBlock({self.enemy3.ninja.removeFromParent()}), SKAction.runBlock({
-                self.enemy3.isDead = false
-                var delay = CGFloat((arc4random() % 10) / 2)
-                var thisSpeed = CGFloat(Float(arc4random()) / Float(UINT32_MAX)) * 0.01
-                var thisSize = CGFloat(Float(arc4random()) / Float(UINT32_MAX))
-                //if size or speed are too low or fast
-                if thisSize < 0.35 || thisSize > 0.7 {
-                    thisSize = 0.55
-                }
-                if thisSpeed < 0.0035 {
-                    thisSpeed = 0.005
-                }
-                
                 self.enemy3.health = 1
-                self.addChild(self.enemy3.createEnemy(self.frame.size.width, speed: thisSpeed, size: thisSize))
+                self.addChild(self.enemy3.createEnemy(self.frame.size.width))
                 self.enemy3.ninja.physicsBody?.categoryBitMask = self.enemy3Category
             })])
             self.runAction(respawnSequence)
         }
+        
+        if enemy4.isDead {
+            enemy4.isDead = false
+            let respawnSequence = SKAction.sequence([SKAction.runBlock({self.enemy4.ninja.removeFromParent()}), SKAction.runBlock({
+                self.enemy4.health = 1
+                self.addChild(self.enemy4.createEnemy(self.frame.size.width))
+                self.enemy4.ninja.physicsBody?.categoryBitMask = self.enemy4Category
+            })])
+            self.runAction(respawnSequence)
+        }
+        
+        //timer/scaling difficulty
+        if (!hero.isDead) {
+            timer += 1
+            if ((timer > 500) && (!enemy2.isSpawning)) {
+                enemy2.isSpawning = true
+                enemy2.isDead = true
+            }
+            if ((timer > 1400) && (!enemy3.isSpawning)) {
+                enemy3.isSpawning = true
+                enemy3.isDead = true
+            }
+            if (timer > 500) {
+                enemy1.canJump = true
+            }
+            if (timer > 1400) {
+                enemy2.canJump = true
+            }
+            if (timer > 1500) {
+                enemy3.canJump = true
+            }
+            if ((timer > 2200) && (!enemy2.isSpawning)) {
+                enemy4.isSpawning = true
+                enemy4.isDead = true
+                enemy2.willJump = true
+            }
+            if (timer > 3000) {
+                enemy4.canJump = true
+            }
+        }
+        
     }
 
     //Touches
@@ -339,7 +368,8 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         for touch: AnyObject in touches {
             let location = touch.locationInNode(self)
             
-            if (CGRectContainsPoint(attackButton.frame, touch.locationInNode(self)) & (!hero.isDead) & (hero.inventory != 0)) {
+            //Throwing stars
+            if (CGRectContainsPoint(attackButton.frame, touch.locationInNode(self)) && (!hero.isDead) && (hero.inventory != 0)) {
                 hero.playThrowAnimation()
                 hero.inventory -= 1
                 updateInventory(hero.inventory)
@@ -367,7 +397,8 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
                 }
             }
             
-            if (CGRectContainsPoint(jumpButton.frame, touch.locationInNode(self)) & (hero.onGround) & (!hero.isDead))  {
+            //Jumping
+            if (CGRectContainsPoint(jumpButton.frame, touch.locationInNode(self)) && (hero.onGround) && (!hero.isDead))  {
                 hero.jump()
             }
             
@@ -390,19 +421,23 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
                 skView.presentScene(scene)
             }
             
-            if (CGRectContainsPoint(self.pauseButton.frame, touch.locationInNode(self)) & (self.view?.paused == false)) {
+            //Pause button doesn't work yet
+            /*
+            if (CGRectContainsPoint(self.pauseButton.frame, touch.locationInNode(self)) && (self.view?.paused == false)) {
                 pauseGame()
                 self.view?.paused = true
             }
             
-            if (CGRectContainsPoint(self.pauseButton.frame, touch.locationInNode(self)) & (self.view?.paused == true)) {
+            if (CGRectContainsPoint(self.pauseButton.frame, touch.locationInNode(self)) && (self.view?.paused == true)) {
                 self.view?.paused = false
             }
+            */
         }
     }
     
     //You die
     func die() {
+        hero.isDead = true
         moving.speed = 0
         hero.playDeadAnimation()
         jumpButton.removeFromParent()
@@ -411,9 +446,8 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         SKAction.sequence([SKAction.runBlock({
             self.backgroundColor = SKColor(red: 1, green: 0, blue: 0, alpha: 1.0)
         }), SKAction.waitForDuration(NSTimeInterval(0.08)), SKAction.runBlock({self.backgroundColor = SKColor(red: 81.0/255.0, green: 192.0/255.0, blue: 201.0/255.0, alpha: 1.0)})])
-        
+
         highScoring()
-        
     }
     
     //Game Over Screen
@@ -442,11 +476,22 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         gameOverText.text = "GAME OVER"
         menuText.text = "MENU"
         playAgainText.text = "PLAY AGAIN"
+        coinsText.fontColor = UIColor.blackColor()
+        coinsText.fontSize = 20
+        var coins = (score / 5) * (timer/100)
+        var coinImage = SKSpriteNode(imageNamed: "coin")
+        coinImage.setScale(0.14)
+        coinsText.text = (String(coins))
+        coinsText.position = CGPointMake(-coinImage.size.width * 1.1, displayPanel.size.height - self.playButton.size.height * 2)
+        coinImage.position = CGPointMake(coinImage.size.width, displayPanel.size.height - self.playButton.size.height * 1.9)
+        displayPanel.addChild(coinsText)
+        displayPanel.addChild(coinImage)
         
         displayPanel.zPosition = 10
         self.menuButton.addChild(menuText)
         self.playButton.addChild(playAgainText)
-        self.menuButton.position = CGPointMake(0, displayPanel.size.height - self.playButton.size.height*2.5)
+        self.playButton.position = CGPointMake(0, displayPanel.size.height - self.playButton.size.height*2.25)
+        self.menuButton.position = CGPointMake(0, displayPanel.size.height - self.playButton.size.height*2.65)
         displayPanel.setScale(3)
         self.playButton.setScale(0.3)
         self.menuButton.setScale(0.3)
@@ -457,6 +502,8 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(displayPanel)
         let moveDisplay = SKAction.moveByX(0, y: -(frame.size.height/2 + displayPanel.size.height), duration: 1)
         displayPanel.runAction(moveDisplay)
+        
+        addCoins(coins)
 
     }
     
@@ -670,6 +717,13 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         let cloudmovement = SKAction.moveByX(-clouddistanceToMove, y: 0.0, duration: NSTimeInterval(0.025 * clouddistanceToMove))
         let removeCloud = SKAction.removeFromParent()
         cloudMoveAndRemove = SKAction.sequence([cloudmovement, removeCloud])
+    }
+    
+    func addCoins(coins: Int) {
+        totalCoins += coins
+        NSUserDefaults.standardUserDefaults().setInteger(totalCoins, forKey: "coins")
+        NSUserDefaults.standardUserDefaults().synchronize()
+        NSUserDefaults.standardUserDefaults().integerForKey("coins")
     }
 }
 

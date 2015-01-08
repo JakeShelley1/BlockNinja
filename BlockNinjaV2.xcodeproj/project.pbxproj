@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2335313C1A5E1D9900A3A419 /* ShopScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2335313B1A5E1D9900A3A419 /* ShopScene.swift */; };
 		23371DA81A09586800F52BD7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23371DA71A09586800F52BD7 /* AppDelegate.swift */; };
 		23371DAA1A09586800F52BD7 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 23371DA91A09586800F52BD7 /* GameScene.sks */; };
 		23371DAC1A09586800F52BD7 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23371DAB1A09586800F52BD7 /* GameScene.swift */; };
@@ -31,6 +32,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2335313B1A5E1D9900A3A419 /* ShopScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShopScene.swift; sourceTree = "<group>"; };
 		23371DA21A09586800F52BD7 /* BlockNinjaV2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BlockNinjaV2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		23371DA61A09586800F52BD7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		23371DA71A09586800F52BD7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -91,6 +93,7 @@
 				23371DA71A09586800F52BD7 /* AppDelegate.swift */,
 				23371DA91A09586800F52BD7 /* GameScene.sks */,
 				23371DAB1A09586800F52BD7 /* GameScene.swift */,
+				2335313B1A5E1D9900A3A419 /* ShopScene.swift */,
 				23371DCB1A09588300F52BD7 /* PlayScene.swift */,
 				23371DCD1A09588900F52BD7 /* Ninja.swift */,
 				23371DAD1A09586800F52BD7 /* GameViewController.swift */,
@@ -238,6 +241,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2335313C1A5E1D9900A3A419 /* ShopScene.swift in Sources */,
 				23371DAC1A09586800F52BD7 /* GameScene.swift in Sources */,
 				23371DAE1A09586800F52BD7 /* GameViewController.swift in Sources */,
 				23371DCC1A09588300F52BD7 /* PlayScene.swift in Sources */,

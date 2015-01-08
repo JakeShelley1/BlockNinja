@@ -33,7 +33,6 @@ class Hero {
         self.inventory = inventory
     }
     
-    
     //Add physics and position to hero
     func createHero(frameWidth: CGFloat) -> SKSpriteNode {
         
@@ -78,18 +77,6 @@ class Hero {
         onGround = false
     }
     
-    func throwStar()-> SKSpriteNode {
-        var shuriken = SKSpriteNode(imageNamed: "shuriken")
-        let shurikenSize = CGSize(width: shuriken.size.width * 0.3, height: shuriken.size.height * 0.3)
-        shuriken.setScale(0.8)
-        shuriken.position = CGPointMake(ninja.position.x / 1.5, ninja.position.y)
-        shuriken.physicsBody = SKPhysicsBody(rectangleOfSize: shurikenSize)
-        shuriken.physicsBody?.dynamic = true
-        shuriken.physicsBody?.affectedByGravity = false
-        playThrowAnimation()
-        return shuriken
-    }
-    
     func playThrowAnimation() {
         let throw = SKTexture(imageNamed: "throw")
         let playThrow = SKAction.animateWithTextures([throw], timePerFrame: 0.1)
@@ -111,21 +98,46 @@ class Enemy {
     var enemyMoveAndRemove: SKAction!
     var isDead = false
     var dying = false
+    var isSpawning = false
+    var willJump = false
+    var canJump = false
     var health: Int
-    var jumper: Bool
+    var jumper = false
     var fakeHealth: Int
     var ninja = SKSpriteNode(imageNamed: "enemyIdle")
     var onGround = false
-    init(health: Int, jumper: Bool) {
+    init(health: Int) {
         self.health = health
         self.fakeHealth = health
-        self.jumper = jumper
     }
     
     //Add physics and position to hero
-    func createEnemy(frameWidth: CGFloat, speed: CGFloat, size: CGFloat)-> SKSpriteNode{
+    func createEnemy(frameWidth: CGFloat)-> SKSpriteNode{
         dying = false
-        var shuriken = SKSpriteNode(imageNamed: "shuriken")
+        if (canJump == true && willJump == false) {
+            var check = arc4random_uniform(2)
+            if (check < 1) {
+                self.jumper = true
+            } else {
+                self.jumper = false
+            }
+        }
+        //Random stats
+        var speed = CGFloat(Float(arc4random()) / Float(UINT32_MAX)) * 0.01
+        var size = CGFloat(Float(arc4random()) / Float(UINT32_MAX))
+
+        //if size or speed are too low or fast
+        if size < 0.35 || size > 0.7 {
+            size = 0.55
+        }
+        if (canJump == true && size < 0.5) {
+            speed = 0.0035
+        }
+        
+        if speed < 0.0035 || canJump {
+            speed = 0.005
+        }
+        
         ninja.position = CGPoint(x: frameWidth + ninja.size.width, y: groundTexture.size.height)
         let adjustedNinjaSize = CGSize(width: ninja.size.width * (size / 1.5), height: ninja.size.height * size)
         ninja.physicsBody = SKPhysicsBody(rectangleOfSize: adjustedNinjaSize)
@@ -170,7 +182,7 @@ class Enemy {
     }
     
     func jump() {
-        ninja.physicsBody?.applyImpulse(CGVectorMake(0, 70))
+        ninja.physicsBody?.applyImpulse(CGVectorMake(0, 15))
         playJumpAnimation()
         onGround = false
     }
@@ -194,8 +206,6 @@ class Enemy {
         ninja.runAction(died)
     }
 }
-
-//TODO: make throwing stars rotate, make throwing stars regenerate over time
 
 class ThrowingStar {
     var isThrown = false
