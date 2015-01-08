@@ -464,14 +464,14 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
     
     //Create end game panel
     func createEndPanel() {
-        playAgainText.fontSize = 45
+        playAgainText.fontSize = 42
         playAgainText.fontColor = UIColor.blackColor()
         playAgainText.position = CGPointMake(0, -self.playButton.size.height/7)
         gameOverText.position = CGPointMake(0, displayPanel.size.height/4)
         menuText.position = CGPointMake(0, -self.menuButton.size.height/7)
-        menuText.fontSize = 45
+        menuText.fontSize = 42
         menuText.fontColor = UIColor.blackColor()
-        gameOverText.fontSize = 23
+        gameOverText.fontSize = 20
         gameOverText.fontColor = UIColor.blackColor()
         gameOverText.text = "GAME OVER"
         menuText.text = "MENU"
@@ -492,9 +492,9 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         self.playButton.addChild(playAgainText)
         self.playButton.position = CGPointMake(0, displayPanel.size.height - self.playButton.size.height*2.25)
         self.menuButton.position = CGPointMake(0, displayPanel.size.height - self.playButton.size.height*2.65)
-        displayPanel.setScale(3)
-        self.playButton.setScale(0.3)
-        self.menuButton.setScale(0.3)
+        displayPanel.setScale(2.7)
+        self.playButton.setScale(0.28)
+        self.menuButton.setScale(0.28)
         displayPanel.addChild(gameOverText)
         displayPanel.addChild(self.playButton)
         displayPanel.addChild(self.menuButton)
@@ -505,22 +505,6 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         
         addCoins(coins)
 
-    }
-    
-    //Spawn Cloud
-    func spawnCloud() {
-        let cloud = SKSpriteNode(imageNamed: "Cloud")
-        let y = arc4random() % UInt32(frame.size.height)
-        var randomSize = CGFloat(Float(arc4random()) / Float(UINT32_MAX)) - 0.6
-        if randomSize < 0.0 {
-            randomSize = 0.2
-        }
-        var randomHeight = UInt32(self.frame.size.height / 1.5) + (arc4random() % UInt32(self.frame.size.height / 2))
-        cloud.setScale(randomSize)
-        cloud.position = CGPointMake(self.frame.size.width + cloud.size.width, CGFloat(randomHeight))
-        
-        cloud.runAction(cloudMoveAndRemove)
-        self.addChild(cloud)
     }
     
     func highScoring() {
@@ -717,6 +701,23 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         let cloudmovement = SKAction.moveByX(-clouddistanceToMove, y: 0.0, duration: NSTimeInterval(0.025 * clouddistanceToMove))
         let removeCloud = SKAction.removeFromParent()
         cloudMoveAndRemove = SKAction.sequence([cloudmovement, removeCloud])
+    }
+    
+    //Spawn Cloud
+    func spawnCloud() {
+        let cloud = SKSpriteNode(imageNamed: "Cloud")
+        let y = arc4random() % UInt32(frame.size.height)
+        var randomSize = CGFloat(Float(arc4random()) / Float(UINT32_MAX)) - 0.6
+        if randomSize < 0.0 {
+            randomSize = 0.2
+        }
+        cloud.zPosition = -11
+        var randomHeight = UInt32(self.frame.size.height / 1.5) + (arc4random() % UInt32(self.frame.size.height / 2))
+        cloud.setScale(randomSize)
+        cloud.position = CGPointMake(self.frame.size.width + cloud.size.width, CGFloat(randomHeight))
+        
+        cloud.runAction(cloudMoveAndRemove)
+        self.addChild(cloud)
     }
     
     func addCoins(coins: Int) {
