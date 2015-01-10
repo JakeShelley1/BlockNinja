@@ -228,6 +228,6 @@ class ThrowingStar {
         self.shuriken.physicsBody?.applyImpulse(CGVectorMake(19, 0))
         self.isThrown = true
     }
-
+    
 }
 

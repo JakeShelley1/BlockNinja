@@ -29,7 +29,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
     let enemy3 = Enemy(health: 1)
     let enemy4 = Enemy(health: 1)
     let fullInventory = NSUserDefaults.standardUserDefaults().integerForKey("inventory")
-    let rechargeSpeed = NSUserDefaults.standardUserDefaults().integerForKey("rechargeSpeed")
+    let rechargeSpeed = NSUserDefaults.standardUserDefaults().floatForKey("rechargeSpeed")
     var timerIsRunning = false
     
     let shuriken1 = ThrowingStar()
@@ -84,7 +84,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         moving = SKNode()
         self.addChild(moving)
         moving.speed = 1
-        skyColor = SKColor(red: 81.0/255.0, green: 192.0/255.0, blue: 201.0/255.0, alpha: 1.0)
+        skyColor = SKColor(red: 90.0/255.0, green: 192.0/255.0, blue: 231.0/255.0, alpha: 1.0)
         self.backgroundColor = skyColor
         self.physicsWorld.contactDelegate = self
         self.physicsWorld.gravity = CGVectorMake(0.0, -12.8)
@@ -519,7 +519,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         NSUserDefaults.standardUserDefaults().integerForKey("highscore")
     
     }
-    
+    /*
     func pauseGame() {
         
         pauseMenuText.fontSize = 45
@@ -546,7 +546,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         pauseText.position = CGPointMake(frame.size.width/2, frame.size.height/2 + pauseMenuButton.size.height * 2)
         self.addChild(pauseText)
     }
- 
+    */
     func showInventory() {
         shurikenImage1.setScale(0.6)
         shurikenImage1.position = CGPointMake(CGRectGetMinX(self.frame) + (shurikenImage1.size.width), CGRectGetMaxY(self.frame) - (1.07 * pauseButton.size.height))
@@ -727,4 +727,3 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         NSUserDefaults.standardUserDefaults().integerForKey("coins")
     }
 }
-

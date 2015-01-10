@@ -27,9 +27,8 @@ class GameScene: SKScene {
         moving = SKNode()
         self.addChild(moving)
         moving.speed = 0
-        var skyColor = SKColor(red: 81.0/255.0, green: 192.0/255.0, blue: 201.0/255.0, alpha: 1.0)
+        var skyColor = SKColor(red: 90.0/255.0, green: 192.0/255.0, blue: 231.0/255.0, alpha: 1.0)
         backgroundColor = skyColor
-        
         
         self.startButton.setScale(1.5)
         self.startButton.position = CGPointMake((self.frame.size.width/2) - ((self.frame.width/2) * 0.5), CGRectGetMidY(self.frame))
@@ -80,8 +79,6 @@ class GameScene: SKScene {
             sprite.runAction(moveGroundSpritesForever, withKey: "moveGroundSprite")
             sprite.physicsBody?.dynamic = false
             moving.addChild(sprite)
-            
-            
         }
         
         //Set initial inventory value
@@ -93,12 +90,12 @@ class GameScene: SKScene {
         NSUserDefaults.standardUserDefaults().integerForKey("inventory")
         
         //Set initial throwing star recharge speed
-        NSUserDefaults.standardUserDefaults().integerForKey("rechargeSpeed")
-        if (NSUserDefaults.standardUserDefaults().integerForKey("rechargeSpeed") == 0) {
-            NSUserDefaults.standardUserDefaults().setInteger(2, forKey: "rechargeSpeed")
+        NSUserDefaults.standardUserDefaults().floatForKey("rechargeSpeed")
+        if (NSUserDefaults.standardUserDefaults().floatForKey("rechargeSpeed") == 0) {
+            NSUserDefaults.standardUserDefaults().setFloat(2.5, forKey: "rechargeSpeed")
             NSUserDefaults.standardUserDefaults().synchronize()
         }
-        NSUserDefaults.standardUserDefaults().integerForKey("inventory")
+        NSUserDefaults.standardUserDefaults().floatForKey("rechargeSpeed")
         
         //Display highscore
         if (highScore != 0) {
