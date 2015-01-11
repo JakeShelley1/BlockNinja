@@ -31,12 +31,11 @@ class ShopScene: SKScene {
     let backButton = SKSpriteNode(imageNamed: "backArrow")
     var inventoryCostText = SKLabelNode(fontNamed: "CF Samurai Bob")
     var rechargeCostText = SKLabelNode(fontNamed: "CF Samurai Bob")
-    var inventoryCost: Int!
-    var rechargeCost: Int!
+    var inventoryCost = 100000
+    var rechargeCost = 100000
     var activeFade = false
     
     override func didMoveToView(view: SKView) {
-        
         var skyColor = SKColor(red: 25.0/255.0, green: 25.0/255.0, blue: 129.0/255.0, alpha: 1.0)
         backgroundColor = skyColor
         buildings.setScale(0.5)
@@ -59,7 +58,7 @@ class ShopScene: SKScene {
         
         for touch: AnyObject in touches {
             let location = touch.locationInNode(self)
-            if (CGRectContainsPoint(self.self.frame, touch.locationInNode(backButton))) {
+            if (CGRectContainsPoint(self.frame, touch.locationInNode(backButton))) {
                 if let scene = GameScene.unarchiveFromFile("GameScene") as? GameScene {
                     let skView = self.view as SKView!
                     skView.ignoresSiblingOrder = true
@@ -69,7 +68,7 @@ class ShopScene: SKScene {
             }
             
             if (self.nodeAtPoint(location) == self.buyThrowingStar || self.nodeAtPoint(location) == self.buyThrowingStarText || self.nodeAtPoint(location) == self.throwingStar) {
-                if (coins > inventoryCost) {
+                if (coins > inventoryCost && inventory < 3) {
                     coins -= inventoryCost
                     self.coinText.text = String(coins)
                     inventory += 1
@@ -88,7 +87,7 @@ class ShopScene: SKScene {
             }
             
             if (self.nodeAtPoint(location) == self.buyRecharge || self.nodeAtPoint(location) == self.buyRechargeText || self.nodeAtPoint(location) == self.arrowUp) {
-                if (coins > rechargeCost && rechargeSpeed > 1.5) {
+                if ((coins > rechargeCost) && (rechargeSpeed > 1.5)) {
                     coins -= rechargeCost
                     self.coinText.text = String(coins)
                     rechargeSpeed -= 0.5
@@ -111,7 +110,11 @@ class ShopScene: SKScene {
     func showCoins() {
         coinText.fontSize = 50
         coinText.fontColor = UIColor.whiteColor()
-        coinText.text = String(coins)
+        if (coins > 99999) {
+            coinText.text = "99999"
+        } else {
+            coinText.text = String(coins)
+        }
         coinText.position = CGPointMake(CGRectGetMinX(frame) + (coinImage.size.width * 1.34), CGRectGetMaxY(frame) - (coinImage.size.height/1.5))
         self.addChild(coinText)
         coinImage.setScale(0.5)
@@ -164,20 +167,27 @@ class ShopScene: SKScene {
     func pricing() {
         if (rechargeSpeed == 2.5) {
             rechargeCost = 1000
+            rechargeCostText.text = "X    " + String(rechargeCost)
         } else if (rechargeSpeed == 2.0) {
             rechargeCost = 2000
-        } else if (rechargeSpeed == 1.5) {
-            rechargeCost = 3000
+            rechargeCostText.text = "X    " + String(rechargeCost)
+        } else {
+            coinImage2.hidden = true
+            rechargeCostText.text = "SOLD OUT"
         }
-        rechargeCostText.text = "X    " + String(rechargeCost)
-
+        
         if (inventory == 1) {
             inventoryCost = 500
+            inventoryCostText.text = "X    " + String(inventoryCost)
         } else if (inventory == 2) {
             inventoryCost = 1500
+            inventoryCostText.text = "X    " + String(inventoryCost)
+        } else {
+            coinImage1.hidden = true
+            inventoryCostText.text = "SOLD OUT"
         }
-        inventoryCostText.text = "X    " + String(inventoryCost)
     }
+    
     //Super bootleg fadeout....
     func titleFade() {
         if (!activeFade) {

@@ -333,24 +333,26 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         //timer/scaling difficulty
         if (!hero.isDead) {
             timer += 1
-            if ((timer > 500) && (!enemy2.isSpawning)) {
+            if ((timer > 400) && (!enemy2.isSpawning)) {
                 enemy2.isSpawning = true
                 enemy2.isDead = true
             }
-            if ((timer > 1400) && (!enemy3.isSpawning)) {
-                enemy3.isSpawning = true
-                enemy3.isDead = true
-            }
-            if (timer > 500) {
+            if (timer > 100 && timer < 800) {
+                enemy1.willJump = false
                 enemy1.canJump = true
             }
-            if (timer > 1400) {
+            if ((timer > 900) && (!enemy3.isSpawning)) {
+                enemy3.isSpawning = true
+                enemy3.isDead = true
                 enemy2.canJump = true
             }
-            if (timer > 1500) {
-                enemy3.canJump = true
+            if (timer > 200) {
+                enemy1.willJump = true
             }
-            if ((timer > 2200) && (!enemy2.isSpawning)) {
+            if (timer > 1400) {
+                enemy1.willJump = true
+            }
+            if ((timer > 2000) && (!enemy4.isSpawning)) {
                 enemy4.isSpawning = true
                 enemy4.isDead = true
                 enemy2.willJump = true
@@ -359,7 +361,6 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
                 enemy4.canJump = true
             }
         }
-        
     }
 
     //Touches
@@ -546,7 +547,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         pauseText.position = CGPointMake(frame.size.width/2, frame.size.height/2 + pauseMenuButton.size.height * 2)
         self.addChild(pauseText)
     }
-    */
+*/
     func showInventory() {
         shurikenImage1.setScale(0.6)
         shurikenImage1.position = CGPointMake(CGRectGetMinX(self.frame) + (shurikenImage1.size.width), CGRectGetMaxY(self.frame) - (1.07 * pauseButton.size.height))
@@ -616,7 +617,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         leftEndOfScreen.physicsBody?.dynamic = false
         
         rightEndOfScreen.physicsBody = SKPhysicsBody(rectangleOfSize: endScreenSize)
-        rightEndOfScreen.position = CGPointMake(frame.size.width + enemy1.ninja.size.width, frame.size.height/2)
+        rightEndOfScreen.position = CGPointMake(frame.size.width + shuriken1.shuriken.size.width, frame.size.height/2)
         rightEndOfScreen.physicsBody?.categoryBitMask = endOfScreenCategory
         rightEndOfScreen.physicsBody?.contactTestBitMask = weaponCategory
         rightEndOfScreen.physicsBody?.dynamic = false

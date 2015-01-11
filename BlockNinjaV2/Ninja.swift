@@ -111,7 +111,6 @@ class Enemy {
         self.fakeHealth = health
     }
     
-    //Add physics and position to hero
     func createEnemy(frameWidth: CGFloat)-> SKSpriteNode{
         dying = false
         if (canJump == true && willJump == false) {
@@ -121,6 +120,8 @@ class Enemy {
             } else {
                 self.jumper = false
             }
+        } else if (willJump == true) {
+            self.jumper = true
         }
         //Random stats
         var speed = CGFloat(Float(arc4random()) / Float(UINT32_MAX)) * 0.01
@@ -130,12 +131,11 @@ class Enemy {
         if size < 0.35 || size > 0.7 {
             size = 0.55
         }
-        if (canJump == true && size < 0.5) {
-            speed = 0.0035
-        }
-        
-        if speed < 0.0035 || canJump {
-            speed = 0.005
+        if speed < 0.0035 || self.jumper == true {
+            speed = 0.0047
+            if (size < 0.42) {
+                size = 0.46
+            }
         }
         
         ninja.position = CGPoint(x: frameWidth + ninja.size.width, y: groundTexture.size.height)
@@ -157,7 +157,7 @@ class Enemy {
         ninja.runAction(enemyMoveAndRemove, withKey: "enemyMoveAndRemove")
         
         return ninja
-     }
+    }
     
     func playWalkAnimation() {
         
