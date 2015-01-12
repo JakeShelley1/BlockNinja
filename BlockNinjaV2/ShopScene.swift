@@ -87,14 +87,14 @@ class ShopScene: SKScene {
             }
             
             if (self.nodeAtPoint(location) == self.buyRecharge || self.nodeAtPoint(location) == self.buyRechargeText || self.nodeAtPoint(location) == self.arrowUp) {
-                if ((coins > rechargeCost) && (rechargeSpeed > 1.5)) {
+                if ((coins > rechargeCost) && (rechargeSpeed >= 1.5)) {
                     coins -= rechargeCost
                     self.coinText.text = String(coins)
                     rechargeSpeed -= 0.5
                     NSUserDefaults.standardUserDefaults().setInteger(coins, forKey: "coins")
                     NSUserDefaults.standardUserDefaults().setFloat(rechargeSpeed, forKey: "rechargeSpeed")
                     pricing()
-                } else if (rechargeSpeed == 1.5) {
+                } else if (rechargeSpeed == 1.0) {
                     title.text = "MAX LEVEL"
                     title.alpha = 1.0
                     titleFade()
@@ -115,10 +115,10 @@ class ShopScene: SKScene {
         } else {
             coinText.text = String(coins)
         }
-        coinText.position = CGPointMake(CGRectGetMinX(frame) + (coinImage.size.width * 1.34), CGRectGetMaxY(frame) - (coinImage.size.height/1.5))
+        coinText.position = CGPointMake(CGRectGetMinX(frame) + (coinImage.size.width * 1.54), CGRectGetMaxY(frame) - (coinImage.size.height/1.5))
         self.addChild(coinText)
         coinImage.setScale(0.5)
-        coinImage.position = CGPointMake(CGRectGetMinX(frame) + (coinImage.size.width * 0.7), (CGRectGetMaxY(frame) - (coinImage.size.height * 0.74)))
+        coinImage.position = CGPointMake(CGRectGetMinX(frame) + (coinImage.size.width * 0.7), (CGRectGetMaxY(frame) - (coinImage.size.height * 0.8)))
         self.addChild(coinImage)
         
         coinImage1.setScale(0.5)
@@ -159,8 +159,8 @@ class ShopScene: SKScene {
         self.addChild(rechargeCostText)
         self.addChild(inventoryCostText)
         
-        backButton.setScale(0.4)
-        backButton.position = CGPointMake(CGRectGetMaxX(frame) - backButton.size.width * 0.7, CGRectGetMaxY(frame) - backButton.size.height * 0.7)
+        backButton.setScale(1.1)
+        backButton.position = CGPointMake(CGRectGetMaxX(frame) - backButton.size.width, CGRectGetMaxY(frame) - backButton.size.height)
         self.addChild(backButton)
     }
     
@@ -170,6 +170,9 @@ class ShopScene: SKScene {
             rechargeCostText.text = "X    " + String(rechargeCost)
         } else if (rechargeSpeed == 2.0) {
             rechargeCost = 2000
+            rechargeCostText.text = "X    " + String(rechargeCost)
+        } else if (rechargeSpeed == 1.5) {
+            rechargeCost = 5000
             rechargeCostText.text = "X    " + String(rechargeCost)
         } else {
             coinImage2.hidden = true

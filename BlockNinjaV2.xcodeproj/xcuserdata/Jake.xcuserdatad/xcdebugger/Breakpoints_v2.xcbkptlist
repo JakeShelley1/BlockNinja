@@ -202,11 +202,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BlockNinjaV2/ShopScene.swift"
-            timestampString = "442689810.770928"
+            timestampString = "442772573.320127"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "154"
-            endingLineNumber = "154"
+            startingLineNumber = "158"
+            endingLineNumber = "158"
             landmarkName = "createShop()"
             landmarkType = "5">
          </BreakpointContent>
@@ -218,13 +218,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BlockNinjaV2/ShopScene.swift"
-            timestampString = "442691123.970117"
+            timestampString = "442772573.320127"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "188"
-            endingLineNumber = "188"
-            landmarkName = "ShopScene"
-            landmarkType = "3">
+            startingLineNumber = "193"
+            endingLineNumber = "193"
+            landmarkName = "pricing()"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

@@ -154,6 +154,18 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
                 enemy3.playDeadAnimation(frame.size.width)
             }
             
+        case enemy4Category | weapon1Category:
+            enemy4.health = enemy4.health - 1
+            if (!enemy4.dying) {
+                shuriken1.shuriken.removeFromParent()
+            }
+            if enemy4.health == 0 {
+                enemy4.dying = true
+                score++
+                self.scoreText.text = String(self.score)
+                enemy4.playDeadAnimation(frame.size.width)
+            }
+            
         case enemy1Category | weapon2Category:
             enemy1.health = enemy1.health - 1
             if (!enemy1.dying) {
@@ -188,6 +200,18 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
                 score++
                 self.scoreText.text = String(self.score)
                 enemy3.playDeadAnimation(frame.size.width)
+            }
+            
+        case enemy4Category | weapon2Category:
+            enemy4.health = enemy4.health - 1
+            if (!enemy4.dying) {
+                shuriken2.shuriken.removeFromParent()
+            }
+            if enemy4.health == 0 {
+                enemy4.dying = true
+                score++
+                self.scoreText.text = String(self.score)
+                enemy4.playDeadAnimation(frame.size.width)
             }
             
         case enemy1Category | weapon3Category:
@@ -225,12 +249,18 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
                 self.scoreText.text = String(self.score)
                 enemy3.playDeadAnimation(frame.size.width)
             }
-
-        /*
-        case enemy1Category | weaponCategory:
-            shuriken.removeFromParent()
-            enemy1.playDeadAnimation(frame.size.width)
-        */
+            
+        case enemy4Category | weapon3Category:
+            enemy4.health = enemy4.health - 1
+            if (!enemy4.dying) {
+                shuriken3.shuriken.removeFromParent()
+            }
+            if enemy4.health == 0 {
+                enemy4.dying = true
+                score++
+                self.scoreText.text = String(self.score)
+                enemy4.playDeadAnimation(frame.size.width)
+            }
             
         case (enemy1Category | ninjaCategory):
             if (!hero.isDead && !enemy1.dying) {
@@ -245,7 +275,6 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
                 die()
             }
             
-        //no fourth enemy...yet
         case (enemy4Category | ninjaCategory):
             if !hero.isDead{
                 die()
@@ -274,12 +303,12 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             if (enemy3.health != 0 && enemy3.jumper == true) {
                 enemy3.jump()
             }
-        /*
+        
         case enemy2Category | groundCategory:
             if (enemy2.health != 0 && enemy2.jumper == true) {
                 enemy2.jump()
             }
-          */
+
         default:
             return
         }
@@ -422,8 +451,6 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
                 skView.presentScene(scene)
             }
             
-            //Pause button doesn't work yet
-            /*
             if (CGRectContainsPoint(self.pauseButton.frame, touch.locationInNode(self)) && (self.view?.paused == false)) {
                 pauseGame()
                 self.view?.paused = true
@@ -432,7 +459,6 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             if (CGRectContainsPoint(self.pauseButton.frame, touch.locationInNode(self)) && (self.view?.paused == true)) {
                 self.view?.paused = false
             }
-            */
         }
     }
     
@@ -479,7 +505,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         playAgainText.text = "PLAY AGAIN"
         coinsText.fontColor = UIColor.blackColor()
         coinsText.fontSize = 20
-        var coins = (score / 5) * (timer/100)
+        var coins = (score / 2) * (timer/150)
         var coinImage = SKSpriteNode(imageNamed: "coin")
         coinImage.setScale(0.14)
         coinsText.text = (String(coins))
@@ -520,9 +546,8 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         NSUserDefaults.standardUserDefaults().integerForKey("highscore")
     
     }
-    /*
+    
     func pauseGame() {
-        
         pauseMenuText.fontSize = 45
         pauseMenuText.fontColor = UIColor.blackColor()
         pauseMenuText.text = ("MENU")
@@ -547,7 +572,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         pauseText.position = CGPointMake(frame.size.width/2, frame.size.height/2 + pauseMenuButton.size.height * 2)
         self.addChild(pauseText)
     }
-*/
+
     func showInventory() {
         shurikenImage1.setScale(0.6)
         shurikenImage1.position = CGPointMake(CGRectGetMinX(self.frame) + (shurikenImage1.size.width), CGRectGetMaxY(self.frame) - (1.07 * pauseButton.size.height))

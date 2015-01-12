@@ -50,7 +50,7 @@ class GameScene: SKScene {
         coinText.fontSize = 50
         coinText.fontColor = UIColor.blackColor()
         coinText.text = String(coins)
-        coinText.position = CGPointMake(CGRectGetMinX(frame) + (coinImage.size.width * 1.34), CGRectGetMaxY(frame) - (coinImage.size.height * 2.5))
+        coinText.position = CGPointMake(CGRectGetMinX(frame) + (coinImage.size.width * 1.5), CGRectGetMaxY(frame) - (coinImage.size.height * 2.5))
         self.addChild(coinText)
         coinImage.setScale(0.5)
         coinImage.position = CGPointMake(CGRectGetMinX(frame) + (coinImage.size.width * 0.7), (CGRectGetMaxY(frame) - (coinImage.size.height * 4.5)))
