@@ -157,7 +157,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         case enemy4Category | weapon1Category:
             enemy4.health = enemy4.health - 1
             if (!enemy4.dying) {
-                shuriken1.shuriken.removeFromParent()
+                shuriken3.shuriken.removeFromParent()
             }
             if enemy4.health == 0 {
                 enemy4.dying = true
@@ -319,7 +319,6 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
     //Run everytime frame is rendered
     override func update(currentTime: CFTimeInterval) {
 
-        //RESPAWN ENEMIES -- TODO: make enemies with the ability to jump (and throw stars)
         if enemy1.isDead {
             enemy1.isDead = false
             let respawnSequence = SKAction.sequence([SKAction.runBlock({self.enemy1.ninja.removeFromParent()}), SKAction.runBlock({
@@ -451,6 +450,8 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
                 skView.presentScene(scene)
             }
             
+            //Pause button doesn't work yet
+            /*
             if (CGRectContainsPoint(self.pauseButton.frame, touch.locationInNode(self)) && (self.view?.paused == false)) {
                 pauseGame()
                 self.view?.paused = true
@@ -459,6 +460,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             if (CGRectContainsPoint(self.pauseButton.frame, touch.locationInNode(self)) && (self.view?.paused == true)) {
                 self.view?.paused = false
             }
+            */
         }
     }
     
@@ -546,8 +548,9 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         NSUserDefaults.standardUserDefaults().integerForKey("highscore")
     
     }
-    
+    /*
     func pauseGame() {
+        
         pauseMenuText.fontSize = 45
         pauseMenuText.fontColor = UIColor.blackColor()
         pauseMenuText.text = ("MENU")
@@ -572,7 +575,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         pauseText.position = CGPointMake(frame.size.width/2, frame.size.height/2 + pauseMenuButton.size.height * 2)
         self.addChild(pauseText)
     }
-
+*/
     func showInventory() {
         shurikenImage1.setScale(0.6)
         shurikenImage1.position = CGPointMake(CGRectGetMinX(self.frame) + (shurikenImage1.size.width), CGRectGetMaxY(self.frame) - (1.07 * pauseButton.size.height))
