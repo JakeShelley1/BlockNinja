@@ -218,7 +218,7 @@ class ThrowingStar {
         self.shuriken.physicsBody?.dynamic = true
         self.shuriken.physicsBody?.affectedByGravity = false
         self.shuriken.physicsBody?.collisionBitMask = 0
-        self.shuriken.physicsBody?.contactTestBitMask = enemy1Category | enemy2Category | enemy3Category | endOfScreenCategory
+        self.shuriken.physicsBody?.contactTestBitMask = enemy1Category | enemy2Category | enemy3Category | enemy4Category | endOfScreenCategory
     }
 
     func throwStar(positionx: CGFloat, positiony: CGFloat) {
