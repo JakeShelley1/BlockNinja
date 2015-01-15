@@ -1,6 +1,6 @@
 BlockNinja
 ==========
 
-![](BlockNinjaV2/images.xcassets/temp.png?raw=true)
+![](images/temp.png?raw=true)
 
 IOS Game written in Swift
