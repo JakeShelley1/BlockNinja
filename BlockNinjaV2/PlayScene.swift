@@ -743,6 +743,19 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(pauseButton)
     }
     
+    func createGround() {
+        //Actual Ground
+        var ground = SKNode()
+        ground.position = CGPointMake(0, groundTexture.size.height / 1.47)
+        ground.physicsBody = SKPhysicsBody(rectangleOfSize: CGSizeMake(self.frame.size.width * 4, groundTexture.size.height / 4.0))
+        ground.setScale(1.0)
+        ground.physicsBody?.dynamic = false
+        ground.physicsBody?.categoryBitMask = groundCategory
+        ground.physicsBody?.contactTestBitMask = ninjaCategory | enemy1Category | enemy2Category | enemy3Category | enemy4Category
+        ground.physicsBody?.collisionBitMask = ninjaCategory | enemy1Category | enemy2Category | enemy3Category | enemy4Category
+        ground.physicsBody?.restitution = 0.0
+        self.addChild(ground)
+    }
     func createAndMoveGround() {
         //Ground
         let groundTexture = SKTexture(imageNamed: "Ground")
@@ -762,17 +775,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
             moving.addChild(sprite)
         }
         
-        //Actual Ground
-        var ground = SKNode()
-        ground.position = CGPointMake(0, groundTexture.size().height / 1.47)
-        ground.physicsBody = SKPhysicsBody(rectangleOfSize: CGSizeMake(self.frame.size.width * 4, groundTexture.size().height / 4.0))
-        ground.setScale(1.0)
-        ground.physicsBody?.dynamic = false
-        ground.physicsBody?.categoryBitMask = groundCategory
-        ground.physicsBody?.contactTestBitMask = ninjaCategory | enemy1Category | enemy2Category | enemy3Category | enemy4Category
-        ground.physicsBody?.collisionBitMask = ninjaCategory | enemy1Category | enemy2Category | enemy3Category | enemy4Category
-        ground.physicsBody?.restitution = 0.0
-        self.addChild(ground)
+        createGround()
     }
     
     func createJumpAndAttackButtons() {

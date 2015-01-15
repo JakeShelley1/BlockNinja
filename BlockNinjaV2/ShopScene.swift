@@ -50,8 +50,6 @@ class ShopScene: SKScene {
         title.fontColor = UIColor.whiteColor()
         title.position = CGPoint(x: frame.width/2, y: frame.height/1.15)
         self.addChild(title)
-        coins = 100000
-        println(inventory)
     }
     
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
