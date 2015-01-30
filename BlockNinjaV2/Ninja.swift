@@ -128,7 +128,7 @@ class Enemy {
         var size = CGFloat(Float(arc4random()) / Float(UINT32_MAX))
 
         //if size or speed are too low or fast
-        if size < 0.35 || size > 0.7 {
+        if size < 0.4 || size > 0.7 {
             size = 0.55
         }
         if speed < 0.0035 || self.jumper == true {

@@ -28,7 +28,7 @@ class ShopScene: SKScene {
     let buildings = SKSpriteNode(imageNamed: "buildings")
     var rechargeSpeed = NSUserDefaults.standardUserDefaults().floatForKey("rechargeSpeed")
     var inventory = NSUserDefaults.standardUserDefaults().integerForKey("inventory")
-    let backButton = SKSpriteNode(imageNamed: "backArrow")
+    let backButton = SKSpriteNode(imageNamed: "x")
     var inventoryCostText = SKLabelNode(fontNamed: "CF Samurai Bob")
     var rechargeCostText = SKLabelNode(fontNamed: "CF Samurai Bob")
     var inventoryCost = 100000
@@ -158,20 +158,20 @@ class ShopScene: SKScene {
         self.addChild(rechargeCostText)
         self.addChild(inventoryCostText)
         
-        backButton.setScale(1.1)
-        backButton.position = CGPointMake(CGRectGetMaxX(frame) - backButton.size.width, CGRectGetMaxY(frame) - backButton.size.height)
+        backButton.setScale(0.08)
+        backButton.position = CGPointMake(CGRectGetMaxX(frame) - backButton.size.width * 0.6, CGRectGetMaxY(frame) - backButton.size.height * 0.6)
         self.addChild(backButton)
     }
     
     func pricing() {
         if (rechargeSpeed == 2.5) {
-            rechargeCost = 500
+            rechargeCost = 200
             rechargeCostText.text = "X    " + String(rechargeCost)
         } else if (rechargeSpeed == 2.0) {
-            rechargeCost = 2000
+            rechargeCost = 750
             rechargeCostText.text = "X    " + String(rechargeCost)
         } else if (rechargeSpeed == 1.5) {
-            rechargeCost = 5000
+            rechargeCost = 1500
             rechargeCostText.text = "X    " + String(rechargeCost)
         } else {
             coinImage2.hidden = true
@@ -179,13 +179,13 @@ class ShopScene: SKScene {
         }
         
         if (inventory == 1) {
-            inventoryCost = 250
+            inventoryCost = 50
             inventoryCostText.text = "X    " + String(inventoryCost)
         } else if (inventory == 2) {
-            inventoryCost = 1500
+            inventoryCost = 300
             inventoryCostText.text = "X    " + String(inventoryCost)
         } else if (inventory == 3) {
-            inventoryCost = 4000
+            inventoryCost = 1000
             inventoryCostText.text = "X    " + String(inventoryCost)
         } else {
             coinImage1.hidden = true

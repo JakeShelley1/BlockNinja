@@ -569,6 +569,7 @@ class PlayScene: SKScene, SKPhysicsContactDelegate {
         coinsText.fontSize = 20
         var coins = (score / 2) * (timer/150)
         var coinImage = SKSpriteNode(imageNamed: "coin")
+        coinImage.zPosition = 10
         coinImage.setScale(0.14)
         coinsText.text = (String(coins))
         coinsText.position = CGPointMake(-coinImage.size.width * 1.1, displayPanel.size.height - self.playButton.size.height * 2)

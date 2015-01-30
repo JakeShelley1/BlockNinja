@@ -20,16 +20,26 @@ class GameScene: SKScene {
     let startText = SKLabelNode(fontNamed: "CF Samurai Bob")
     let shopText = SKLabelNode(fontNamed: "CF Samurai Bob")
     var coinImage = SKSpriteNode(imageNamed: "coin")
+    var cloudTexture = SKTexture(imageNamed: "Cloud")
+    var cloudMoveAndRemove = SKAction()
     var highScore = NSUserDefaults.standardUserDefaults().integerForKey("highscore")
     var coinText = SKLabelNode(fontNamed: "CF Samurai Bob")
+    var cheatCount = 0
+    let leftEndOfScreen = SKSpriteNode(imageNamed: "endOfScreen")
+    let rightEndOfScreen = SKSpriteNode(imageNamed: "endOfScreen")
+    let enemy1Category: UInt32 = 1 << 3
+    let enemy2Category: UInt32 = 1 << 4
+    let endOfScreenCategory: UInt32 = 1 << 8 //End of screen
     
     override func didMoveToView(view: SKView) {
+    
         moving = SKNode()
         self.addChild(moving)
         moving.speed = 0
+        createAndMoveClouds()
         var skyColor = SKColor(red: 90.0/255.0, green: 192.0/255.0, blue: 231.0/255.0, alpha: 1.0)
         backgroundColor = skyColor
-        
+
         self.startButton.setScale(1.5)
         self.startButton.position = CGPointMake((self.frame.size.width/2) - ((self.frame.width/2) * 0.5), CGRectGetMidY(self.frame))
         self.shopButton.setScale(1.5)
@@ -49,7 +59,11 @@ class GameScene: SKScene {
         
         coinText.fontSize = 50
         coinText.fontColor = UIColor.blackColor()
-        coinText.text = String(coins)
+        if (coins > 99999) {
+            coinText.text = "99999"
+        } else {
+            coinText.text = String(coins)
+        }
         coinText.position = CGPointMake(CGRectGetMinX(frame) + (coinImage.size.width * 1.5), CGRectGetMaxY(frame) - (coinImage.size.height * 2.5))
         self.addChild(coinText)
         coinImage.setScale(0.5)
@@ -133,11 +147,50 @@ class GameScene: SKScene {
                 skView.presentScene(scene)
                 
             }
+            
+            if (self.nodeAtPoint(location) == self.coinImage) {
+                cheatCount += 1
+                if (cheatCount == 10) {
+                    NSUserDefaults.standardUserDefaults().setInteger(99999, forKey: "coins")
+                    NSUserDefaults.standardUserDefaults().synchronize()
+                    NSUserDefaults.standardUserDefaults().integerForKey("coins")
+                    coins = NSUserDefaults.standardUserDefaults().integerForKey("coins")
+                    coinText.text = String(coins)
+                }
+            }
         }
     }
     
+    func createAndMoveClouds() {
+        //Cloud spawning
+        let spawnACloud = SKAction.runBlock({self.spawnCloud()})
+        let spawnThenDelayCloud = SKAction.sequence([spawnACloud, SKAction.waitForDuration(6.0)])
+        let spawnThenDelayCloudForever = SKAction.repeatActionForever(spawnThenDelayCloud)
+        self.runAction(spawnThenDelayCloudForever)
+        let clouddistanceToMove = CGFloat(self.frame.width + 4.0 * cloudTexture.size().width)
+        let cloudmovement = SKAction.moveByX(-clouddistanceToMove, y: 0.0, duration: NSTimeInterval(0.025 * clouddistanceToMove))
+        let removeCloud = SKAction.removeFromParent()
+        cloudMoveAndRemove = SKAction.sequence([cloudmovement, removeCloud])
+    }
+    
+    //Spawn Cloud
+    func spawnCloud() {
+        let cloud = SKSpriteNode(imageNamed: "Cloud")
+        let y = arc4random() % UInt32(frame.size.height)
+        var randomSize = CGFloat(Float(arc4random()) / Float(UINT32_MAX)) - 0.6
+        if randomSize < 0.0 {
+            randomSize = 0.2
+        }
+        cloud.zPosition = -11
+        var randomHeight = UInt32(self.frame.size.height / 1.5) + (arc4random() % UInt32(self.frame.size.height / 2))
+        cloud.setScale(randomSize)
+        cloud.position = CGPointMake(self.frame.size.width + cloud.size.width, CGFloat(randomHeight))
+        
+        cloud.runAction(cloudMoveAndRemove)
+        self.addChild(cloud)
+    }
+    
     override func update(currentTime: CFTimeInterval) {
-        /* Called before each frame is rendered */
     }
     
 }
