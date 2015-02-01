@@ -373,7 +373,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = BlockNinjaV2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = BlockNinjaV2;
 				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
@@ -386,7 +386,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = BlockNinjaV2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = BlockNinjaV2;
 				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
@@ -405,7 +405,7 @@
 				);
 				INFOPLIST_FILE = BlockNinjaV2Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = BlockNinjaV2Tests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BlockNinjaV2.app/BlockNinjaV2";
 			};
 			name = Debug;
@@ -420,7 +420,7 @@
 				);
 				INFOPLIST_FILE = BlockNinjaV2Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = BlockNinjaV2Tests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BlockNinjaV2.app/BlockNinjaV2";
 			};
 			name = Release;

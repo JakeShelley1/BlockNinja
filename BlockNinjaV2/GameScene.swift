@@ -19,12 +19,14 @@ class GameScene: SKScene {
     var highScoreText = SKLabelNode(fontNamed: "CF Samurai Bob")
     let startText = SKLabelNode(fontNamed: "CF Samurai Bob")
     let shopText = SKLabelNode(fontNamed: "CF Samurai Bob")
+    let hiClaud = SKLabelNode(fontNamed: "CF Samurai Bob")
     var coinImage = SKSpriteNode(imageNamed: "coin")
     var cloudTexture = SKTexture(imageNamed: "Cloud")
     var cloudMoveAndRemove = SKAction()
     var highScore = NSUserDefaults.standardUserDefaults().integerForKey("highscore")
     var coinText = SKLabelNode(fontNamed: "CF Samurai Bob")
     var cheatCount = 0
+    var isCheating = false
     let leftEndOfScreen = SKSpriteNode(imageNamed: "endOfScreen")
     let rightEndOfScreen = SKSpriteNode(imageNamed: "endOfScreen")
     let enemy1Category: UInt32 = 1 << 3
@@ -41,9 +43,9 @@ class GameScene: SKScene {
         backgroundColor = skyColor
 
         self.startButton.setScale(1.5)
-        self.startButton.position = CGPointMake((self.frame.size.width/2) - ((self.frame.width/2) * 0.5), CGRectGetMidY(self.frame))
+        self.startButton.position = CGPointMake((self.frame.size.width/2), CGRectGetMidY(self.frame) + self.startButton.size.height * 0.6)
         self.shopButton.setScale(1.5)
-        self.shopButton.position = CGPointMake((self.frame.size.width/2) + ((self.frame.width/2) * 0.5), CGRectGetMidY(self.frame))
+        self.shopButton.position = CGPointMake((self.frame.size.width/2), CGRectGetMidY(self.frame) - self.startButton.size.height * 0.6)
         self.addChild(self.shopButton)
         self.addChild(self.startButton)
         self.startText.text = ("START")
@@ -71,7 +73,7 @@ class GameScene: SKScene {
         self.addChild(coinImage)
         
         //Text
-        title.text = "BLOCK NINJA"
+        title.text = "BLOCK NINJAS"
         title.fontSize = 130
         title.fontColor = UIColor.blackColor()
         title.position = CGPoint(x: frame.width/2, y: frame.height/1.35)
@@ -124,7 +126,6 @@ class GameScene: SKScene {
     
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
         /* Called when a touch begins */
-        
         for touch: AnyObject in touches {
             let location = touch.locationInNode(self)
             if (self.nodeAtPoint(location) == self.startButton) || (self.nodeAtPoint(location) == self.startText) {
@@ -135,8 +136,8 @@ class GameScene: SKScene {
                 scene.size = skView.bounds.size
                 self.removeAllChildren()
                 skView.presentScene(scene)
-                
             }
+            
             if (self.nodeAtPoint(location) == self.shopButton) || (self.nodeAtPoint(location) == self.shopText) {
                 var scene = ShopScene(size: self.size)
                 let skView = self.view as SKView!
@@ -148,7 +149,7 @@ class GameScene: SKScene {
                 
             }
             
-            if (self.nodeAtPoint(location) == self.coinImage) {
+            if ((self.nodeAtPoint(location) == self.coinImage)) {
                 cheatCount += 1
                 if (cheatCount == 10) {
                     NSUserDefaults.standardUserDefaults().setInteger(99999, forKey: "coins")
@@ -156,6 +157,19 @@ class GameScene: SKScene {
                     NSUserDefaults.standardUserDefaults().integerForKey("coins")
                     coins = NSUserDefaults.standardUserDefaults().integerForKey("coins")
                     coinText.text = String(coins)
+                    isCheating = true
+                } else if (cheatCount > 10) {
+                    cheatCount = 0
+                }
+            }
+            
+            if ((self.nodeAtPoint(location) == self.title) && cheatCount >= 10) {
+                cheatCount += 1
+                if (cheatCount == 25) {
+                    hiClaud.color = UIColor.blackColor()
+                    hiClaud.position = CGPointMake(CGRectGetMidX(self.frame) - self.startButton.size.width, CGRectGetMidY(self.frame))
+                    hiClaud.text = "LOVE YOU CLAUD"
+                    self.addChild(hiClaud)
                 }
             }
         }

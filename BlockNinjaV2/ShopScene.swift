@@ -180,7 +180,7 @@ class ShopScene: SKScene {
         
         if (inventory == 1) {
             inventoryCost = 50
-            inventoryCostText.text = "X    " + String(inventoryCost)
+            inventoryCostText.text = "X      " + String(inventoryCost)
         } else if (inventory == 2) {
             inventoryCost = 300
             inventoryCostText.text = "X    " + String(inventoryCost)

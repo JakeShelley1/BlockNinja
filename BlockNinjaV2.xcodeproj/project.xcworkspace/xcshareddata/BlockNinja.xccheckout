@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>5AAB09AB-4EA1-4B85-9CBC-EF6EDE0FC725</string>
+	<key>IDESourceControlProjectName</key>
+	<string>BlockNinja</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>C32DCD2D6E0DD24DB42D83839C06C520D58D3753</key>
+		<string>https://github.com/JakeShelley1/BlockNinja.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>BlockNinja.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>C32DCD2D6E0DD24DB42D83839C06C520D58D3753</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/JakeShelley1/BlockNinja.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>C32DCD2D6E0DD24DB42D83839C06C520D58D3753</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>C32DCD2D6E0DD24DB42D83839C06C520D58D3753</string>
+			<key>IDESourceControlWCCName</key>
+			<string>BlockNinja</string>
+		</dict>
+	</array>
+</dict>
+</plist>
